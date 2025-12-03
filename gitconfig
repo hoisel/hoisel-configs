@@ -1,0 +1,35 @@
+[user]
+    name = hoisel
+    email = danielhoiselferraz@gmail.com
+[core]
+    editor = windsurf --wait
+    autocrlf = input
+[diff]
+    tool = default-difftool
+[difftool "default-difftool"]
+    cmd = "windsurf --wait --diff "
+[alias]
+    ce = config --global --edit
+    stash-staged  = !git stash --keep-index && git stash push -m "staged"
+    cb = checkout -b
+    co = checkout
+    bb = switch -b
+    b = switch
+    s = status
+    ss = status -s
+    fa = fetch --all
+    fap = fetch --all -p
+    tg = tag -l --sort=v:refname
+    rb = branch -D
+    rtag = "!f() { if [ -z \"$2\" ]; then $2=$1; $1=origin; fi; git tag -d $2 && git push -d $1 $2; }; if [ -z \"$2\" ]; then f origin $1; else f $1 $2; fi;#"
+    ignore = "!gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}; gi"
+[credential "https://github.com"]
+    helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+    helper = !/usr/bin/gh auth git-credential
+[credential "https://gitlab.com"]
+    helper = !/usr/bin/glab auth git-credential
+[credential "https://globalsysdev.visualstudio.com"]
+    helper = store
+[credential "https://dev.azure.com/gmill"]
+    helper = store
