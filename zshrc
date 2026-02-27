@@ -219,3 +219,19 @@ load-nvmrc
 
 
 export PATH="$(npm config get prefix)/bin:$PATH"
+# 🛠️ Hoisel Scripts CLI
+export PATH="$HOME/.local/bin:$HOME/scripts/bin:$PATH"
+
+export EDITOR=/usr/bin/xed
+
+# Load secrets (tokens, API keys) from a separate file not tracked by git
+[ -f ~/.secrets ] && source ~/.secrets
+
+alias vk='HOST=127.0.0.1 PORT=45879 npx vibe-kanban'
+alias vk-kill='kill $(lsof -ti:45879)'
+
+alias claude-full='claude --dangerously-skip-permissions'
+
+alias scripts="cd ~/scripts && git st"
+
+add_export() { local line="export $1"; grep -q "$line" ~/.zshrc || echo "$line" >> ~/.zshrc; source ~/.zshrc; echo "✅ $line adicionado ao ~/.zshrc"; }

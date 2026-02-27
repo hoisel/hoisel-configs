@@ -1,0 +1,170 @@
+{
+    "com.github.kazuyuki114.ulauncher-system-monitor": {
+        "id": "com.github.kazuyuki114.ulauncher-system-monitor",
+        "url": "https://github.com/kazuyuki114/ulauncher-system-monitor",
+        "updated_at": "2025-04-28T09:43:53.531231",
+        "last_commit": "34ecb4f94dcc62c2648c3c80cf27ead89d3674db",
+        "last_commit_time": "2025-04-08T16:07:42"
+    },
+    "com.github.estebanforge.ulauncher-empty-trash": {
+        "id": "com.github.estebanforge.ulauncher-empty-trash",
+        "url": "https://github.com/EstebanForge/ulauncher-empty-trash",
+        "updated_at": "2025-04-28T09:46:59.165617",
+        "last_commit": "962d5a19387148deffb38454e1ce6bbd1aeae121",
+        "last_commit_time": "2025-02-16T00:50:05"
+    },
+    "com.github.pymustafa.ulauncher-shortn": {
+        "id": "com.github.pymustafa.ulauncher-shortn",
+        "url": "https://github.com/PyMustafa/ulauncher-shortn",
+        "updated_at": "2025-04-28T09:52:32.739074",
+        "last_commit": "29caf53983cad40a4f28a6d0b743f6ec7fbc4d6b",
+        "last_commit_time": "2024-08-20T13:13:07"
+    },
+    "com.github.lighttigerxiv.ulauncher-session-manager": {
+        "id": "com.github.lighttigerxiv.ulauncher-session-manager",
+        "url": "https://github.com/lighttigerXIV/ulauncher-session-manager",
+        "updated_at": "2025-04-28T10:42:44.297016",
+        "last_commit": "39218fddb79d86150c4624d96b1a162eba89c993",
+        "last_commit_time": "2023-05-23T08:14:57"
+    },
+    "com.github.lighttigerxiv.ulauncher-terminal-runner-extension": {
+        "id": "com.github.lighttigerxiv.ulauncher-terminal-runner-extension",
+        "url": "https://github.com/lighttigerXIV/ulauncher-terminal-runner-extension/",
+        "updated_at": "2025-04-28T10:43:10.352203",
+        "last_commit": "d6bc2157e5c0ef2f812e3051ddde334c7b485c2e",
+        "last_commit_time": "2023-05-02T22:50:12"
+    },
+    "com.github.eckhoff42.ulauncher-kill-process-on-click": {
+        "id": "com.github.eckhoff42.ulauncher-kill-process-on-click",
+        "url": "https://github.com/Eckhoff42/Ulauncher-Kill-process-on-click",
+        "updated_at": "2025-04-28T10:46:46.842025",
+        "last_commit": "1cc49319d1a8811a2db63b6111effbb5ba087494",
+        "last_commit_time": "2022-05-05T09:03:54"
+    },
+    "com.github.eckhoff42.ulauncher-bluetooth-quick-connect": {
+        "id": "com.github.eckhoff42.ulauncher-bluetooth-quick-connect",
+        "url": "https://github.com/Eckhoff42/Ulauncher-Bluetooth-quick-connect",
+        "updated_at": "2025-04-28T10:47:44.118900",
+        "last_commit": "2cb1d85cdfa870888e3eeda733b63467b0966ad1",
+        "last_commit_time": "2022-05-10T15:18:43"
+    },
+    "com.github.rapha149.ulauncher-deepl": {
+        "id": "com.github.rapha149.ulauncher-deepl",
+        "url": "https://github.com/Rapha149/ulauncher-deepl/",
+        "updated_at": "2025-04-28T10:51:34.006960",
+        "last_commit": "7462c59b1481fae6fbe6ca5ad0491943fbf4b577",
+        "last_commit_time": "2024-12-26T12:02:30"
+    },
+    "com.github.leogouveia.ulauncher-npmjs": {
+        "id": "com.github.leogouveia.ulauncher-npmjs",
+        "url": "https://github.com/leogouveia/ulauncher-npmjs",
+        "updated_at": "2025-04-28T11:04:15.511073",
+        "last_commit": "d0cac29b68c9fbf3d85095f466a4a3801dc48cfb",
+        "last_commit_time": "2021-12-31T11:40:55"
+    },
+    "com.github.dhelmr.ulauncher-tldr": {
+        "id": "com.github.dhelmr.ulauncher-tldr",
+        "url": "https://github.com/dhelmr/ulauncher-tldr",
+        "updated_at": "2025-04-28T11:13:04.144822",
+        "last_commit": "2e5904451bf89dfa155280dfb6fa3d45ed4cab4c",
+        "last_commit_time": "2023-07-29T11:06:30"
+    },
+    "com.github.karlfrederik.ulauncher-speedtest": {
+        "id": "com.github.karlfrederik.ulauncher-speedtest",
+        "url": "https://github.com/KarlFrederik/ulauncher-speedtest",
+        "updated_at": "2025-04-28T11:19:45.643914",
+        "last_commit": "e7be42fdacc6a1741c98cef9638c82cbf92f40c6",
+        "last_commit_time": "2022-03-16T23:39:16"
+    },
+    "com.github.randomcharacter.ulauncher-meet": {
+        "id": "com.github.randomcharacter.ulauncher-meet",
+        "url": "https://github.com/randomCharacter/ulauncher-meet",
+        "updated_at": "2025-04-28T11:22:00.901885",
+        "last_commit": "f2fe055b6e21e15ea4c65918a6f499d61d4cf4b0",
+        "last_commit_time": "2021-02-26T22:04:21"
+    },
+    "com.github.dflock.ulauncher-xfwm-workspace-switcher": {
+        "id": "com.github.dflock.ulauncher-xfwm-workspace-switcher",
+        "url": "https://github.com/dflock/ulauncher-xfwm-workspace-switcher",
+        "updated_at": "2025-04-28T11:24:59.491730",
+        "last_commit": "1b4f0f8a9f6991b2d9a2c1085d3ba05d49e9a28a",
+        "last_commit_time": "2022-01-16T18:02:09"
+    },
+    "com.github.sergius02.ulauncher-apty": {
+        "id": "com.github.sergius02.ulauncher-apty",
+        "url": "https://github.com/sergius02/ulauncher-apty",
+        "updated_at": "2025-04-28T11:28:56.598136",
+        "last_commit": "787a268ae3c51f054b8299d995ab4e480b06839d",
+        "last_commit_time": "2021-02-05T16:28:19"
+    },
+    "com.github.epholys.ultz": {
+        "id": "com.github.epholys.ultz",
+        "url": "https://github.com/Epholys/ultz",
+        "updated_at": "2025-04-28T11:31:34.231387",
+        "last_commit": "9f0749d6ab1fcb99545dae75934b698e5ff975b6",
+        "last_commit_time": "2021-05-12T14:01:01"
+    },
+    "com.github.nastuzzisamy.ulauncher-youtube-search": {
+        "id": "com.github.nastuzzisamy.ulauncher-youtube-search",
+        "url": "https://github.com/NastuzziSamy/ulauncher-youtube-search",
+        "updated_at": "2025-04-28T11:39:28.970348",
+        "last_commit": "fe855811358b2f15ec6ed69ca18e20639874fa28",
+        "last_commit_time": "2021-03-27T11:29:18"
+    },
+    "com.github.nastuzzisamy.ulauncher-custom-scripts": {
+        "id": "com.github.nastuzzisamy.ulauncher-custom-scripts",
+        "url": "https://github.com/NastuzziSamy/ulauncher-custom-scripts",
+        "updated_at": "2025-04-28T11:42:29.272629",
+        "last_commit": "7a68cbafb4acc01fed340d0d2ae99a6701724b31",
+        "last_commit_time": "2022-11-21T21:19:31"
+    },
+    "com.github.ceroprogramming.ulauncher-pulsecontrol": {
+        "id": "com.github.ceroprogramming.ulauncher-pulsecontrol",
+        "url": "https://github.com/CeroProgramming/ulauncher-pulsecontrol",
+        "updated_at": "2025-04-28T11:46:43.769109",
+        "last_commit": "241dae0ca39b857a0da2b8ede201ff6d33523849",
+        "last_commit_time": "2024-03-15T14:30:05"
+    },
+    "com.github.skeletonkey.ulauncher-zoom-join-meeting": {
+        "id": "com.github.skeletonkey.ulauncher-zoom-join-meeting",
+        "url": "https://github.com/skeletonkey/ulauncher-zoom-join-meeting",
+        "updated_at": "2025-04-28T11:52:54.827525",
+        "last_commit": "dc7a810f85c3794a61489f7ed250e0e365824838",
+        "last_commit_time": "2020-03-19T23:03:16"
+    },
+    "com.github.rkarami.ulauncher-gitmoji": {
+        "id": "com.github.rkarami.ulauncher-gitmoji",
+        "url": "https://github.com/rkarami/ulauncher-gitmoji",
+        "updated_at": "2025-04-28T12:02:32.381044",
+        "last_commit": "59ad2d0aa89696d41a29ce0efc845f2138f47b6e",
+        "last_commit_time": "2019-09-26T13:21:43"
+    },
+    "com.github.ulauncher.ulauncher-timer": {
+        "id": "com.github.ulauncher.ulauncher-timer",
+        "url": "https://github.com/ulauncher/ulauncher-timer",
+        "updated_at": "2025-04-28T12:03:35.602084",
+        "last_commit": "2d3fe82fe1e38670e6eb8887cd2a4b4d1c2baa79",
+        "last_commit_time": "2023-03-25T08:07:41"
+    },
+    "com.github.hoisel.pinboard-ulauncher": {
+        "id": "com.github.hoisel.pinboard-ulauncher",
+        "url": "https://github.com/hoisel/pinboard-ulauncher",
+        "updated_at": "2025-04-29T00:41:28.691660",
+        "last_commit": "b8d063b7c0a68dbe2f82708d0555859ffdadfc7e",
+        "last_commit_time": "2025-04-29T03:31:24"
+    },
+    "com.github.vanguard478.ulauncher-zoxide": {
+        "id": "com.github.vanguard478.ulauncher-zoxide",
+        "url": "https://github.com/vanguard478/ulauncher-zoxide",
+        "updated_at": "2026-02-27T08:46:54.092218",
+        "last_commit": "377db8ebfdacb25b35ca96303d07ba23bdfd6f76",
+        "last_commit_time": "2025-05-09T09:00:38"
+    },
+    "com.github.chrizbee.ulauncher-quickfind2": {
+        "id": "com.github.chrizbee.ulauncher-quickfind2",
+        "url": "https://github.com/chrizbee/ulauncher-quickfind2",
+        "updated_at": "2026-02-27T08:24:39.202468",
+        "last_commit": "324457c7f03b68bdba53c0e3675f571fe887e196",
+        "last_commit_time": "2026-02-07T10:44:22"
+    }
+}
