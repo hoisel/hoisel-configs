@@ -33,7 +33,7 @@ ln -s /path/to/hoisel-configs/tmux/.tmux.conf ~/.tmux.conf
 
 # For Ulauncher
 ln -s /path/to/hoisel-configs/ulauncher/settings.json ~/.config/ulauncher/settings.json
-ln -s /path/to/hoisel-configs/ulauncher/extensions.json ~/.local/share/ulauncher/extensions.json
+ln -s /path/to/hoisel-configs/ulauncher/extensions.json ~/.config/ulauncher/extensions.json
 ```
 
 ## Secrets

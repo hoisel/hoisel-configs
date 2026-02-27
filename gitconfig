@@ -10,7 +10,7 @@
     cmd = "windsurf --wait --diff "
 [alias]
     ce = config --global --edit
-    stash-staged  = !git stash --keep-index && git stash push -m "staged"
+    stash-staged  = stash push --staged
     cb = checkout -b
     co = checkout
     bb = switch -b
