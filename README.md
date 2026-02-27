@@ -35,3 +35,21 @@ ln -s /path/to/hoisel-configs/tmux/.tmux.conf ~/.tmux.conf
 ln -s /path/to/hoisel-configs/ulauncher/settings.json ~/.config/ulauncher/settings.json
 ln -s /path/to/hoisel-configs/ulauncher/extensions.json ~/.local/share/ulauncher/extensions.json
 ```
+
+## Secrets
+
+The Zsh configuration sources a `~/.hoisel-secrets` file for sensitive environment variables (API tokens, keys, etc.). This file is **not** tracked by git.
+
+To set it up, create the file with restricted permissions:
+
+```bash
+touch ~/.hoisel-secrets
+chmod 600 ~/.hoisel-secrets
+```
+
+Then add your exports:
+
+```bash
+export GITHUB_MCP_PAT=your_token_here
+export ATLASSIAN_TOKEN=your_token_here
+```

@@ -225,7 +225,7 @@ export PATH="$HOME/.local/bin:$HOME/scripts/bin:$PATH"
 export EDITOR=/usr/bin/xed
 
 # Load secrets (tokens, API keys) from a separate file not tracked by git
-[ -f ~/.secrets ] && source ~/.secrets
+[ -f ~/.hoisel-secrets ] && source ~/.hoisel-secrets
 
 alias vk='HOST=127.0.0.1 PORT=45879 npx vibe-kanban'
 alias vk-kill='kill $(lsof -ti:45879)'
