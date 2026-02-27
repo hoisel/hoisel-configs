@@ -10,7 +10,8 @@ This collection currently includes settings for:
 - **Kitty (`kitty/kitty.conf`):** Configuration for the Kitty terminal emulator, including theme and font settings.
 - **Starship (`starship.toml`):** The configuration for my custom cross-shell prompt.
 - **Git (`gitconfig`):** My global Git configuration.
-- **Ulauncher (`ulauncher/settings.json`):** Settings for the Ulauncher application launcher, including hotkeys and theme.
+- **Ulauncher (`ulauncher/settings.json`, `ulauncher/extensions.json`):** Settings for the Ulauncher application launcher, including hotkeys, theme, and installed extensions.
+- **Tmux (`tmux/.tmux.conf`):** Configuration for the Tmux terminal multiplexer, including mouse support, pane navigation (Ctrl+Arrows), and split shortcuts (Alt+Arrows).
 
 ## Usage
 
@@ -27,6 +28,28 @@ ln -s /path/to/hoisel-configs/kitty/kitty.conf ~/.config/kitty/kitty.conf
 # For Starship
 ln -s /path/to/hoisel-configs/starship.toml ~/.config/starship.toml
 
+# For Tmux
+ln -s /path/to/hoisel-configs/tmux/.tmux.conf ~/.tmux.conf
+
 # For Ulauncher
 ln -s /path/to/hoisel-configs/ulauncher/settings.json ~/.config/ulauncher/settings.json
+ln -s /path/to/hoisel-configs/ulauncher/extensions.json ~/.local/share/ulauncher/extensions.json
+```
+
+## Secrets
+
+The Zsh configuration sources a `~/.hoisel-secrets` file for sensitive environment variables (API tokens, keys, etc.). This file is **not** tracked by git.
+
+To set it up, create the file with restricted permissions:
+
+```bash
+touch ~/.hoisel-secrets
+chmod 600 ~/.hoisel-secrets
+```
+
+Then add your exports:
+
+```bash
+export GITHUB_MCP_PAT=your_token_here
+export ATLASSIAN_TOKEN=your_token_here
 ```
