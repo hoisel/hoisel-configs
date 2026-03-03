@@ -26,6 +26,9 @@ ln -s /path/to/hoisel-configs/zshrc ~/.zshrc
 # For Kitty
 ln -s /path/to/hoisel-configs/kitty/kitty.conf ~/.config/kitty/kitty.conf
 
+# For Git
+ln -s /path/to/hoisel-configs/gitconfig ~/.gitconfig
+
 # For Starship
 ln -s /path/to/hoisel-configs/starship.toml ~/.config/starship.toml
 

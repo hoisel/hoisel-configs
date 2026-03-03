@@ -10,7 +10,7 @@
     cmd = "windsurf --wait --diff "
 [alias]
     ce = config --global --edit
-    stash-staged  = stash push --staged
+    stash-staged = "stash push --staged -m \"staged\""
     cb = checkout -b
     co = checkout
     bb = switch -b
@@ -21,8 +21,10 @@
     fap = fetch --all -p
     tg = tag -l --sort=v:refname
     rb = branch -D
-    rtag = "!f() { if [ -z \"$2\" ]; then $2=$1; $1=origin; fi; git tag -d $2 && git push -d $1 $2; }; if [ -z \"$2\" ]; then f origin $1; else f $1 $2; fi;#"
+    rtag = "!f(){ if [ -z \"$1\" ]; then echo \"Usage: git rtag <tag> | git rtag <remote> <tag>\" >&2; return 2; fi; if [ -z \"$2\" ]; then remote=origin; tag=\"$1\"; else remote=\"$1\"; tag=\"$2\"; fi; git tag -d \"$tag\" 2>/dev/null || true; git push \"$remote\" \":refs/tags/$tag\"; }; f"
     ignore = "!gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}; gi"
+	prw = "!f() {\n  num=\"$1\";\n  remote=\"${2:-origin}\";\n  branch=\"pr-$num\";\n  dir=\"../pr-$num\";\n  git fetch \"$remote\" \"pull/$num/head:$branch\" &&\n  git worktree add \"$dir\" \"$branch\" &&\n  echo \"✅ Worktree para PR #$num criada em $dir\" &&\n  cd \"$dir\";\n}; f"
+	prwrm = "!f() {\n  num=\"$1\";\n  dir=\"../pr-$num\";\n  git worktree remove \"$dir\" &&\n  git branch -D \"pr-$num\" &&\n  echo \"✅ Worktree PR #$num removida de $dir\";\n}; f"
 [credential "https://github.com"]
     helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
@@ -33,3 +35,6 @@
     helper = store
 [credential "https://dev.azure.com/gmill"]
     helper = store
+[maintenance]
+	auto = true
+	repo = /home/hoisel/Dev/Professional/NameCoach/namecoach-fe
