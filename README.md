@@ -12,6 +12,7 @@ This collection currently includes settings for:
 - **Git (`gitconfig`):** My global Git configuration.
 - **Ulauncher (`ulauncher/settings.json`, `ulauncher/extensions.json`):** Settings for the Ulauncher application launcher, including hotkeys, theme, and installed extensions.
 - **Tmux (`tmux/.tmux.conf`):** Configuration for the Tmux terminal multiplexer, including mouse support, pane navigation (Ctrl+Arrows), and split shortcuts (Alt+Arrows).
+- **Cheat Sheets (`cheat-sheets/`):** Quick reference guides, including a Git aliases cheat sheet.
 
 ## Usage
 
@@ -34,6 +35,9 @@ ln -s /path/to/hoisel-configs/tmux/.tmux.conf ~/.tmux.conf
 # For Ulauncher
 ln -s /path/to/hoisel-configs/ulauncher/settings.json ~/.config/ulauncher/settings.json
 ln -s /path/to/hoisel-configs/ulauncher/extensions.json ~/.config/ulauncher/extensions.json
+
+# For Cheat Sheets
+ln -s /path/to/hoisel-configs/cheat-sheets ~/.hoisel/cheat-sheets
 ```
 
 ## Secrets

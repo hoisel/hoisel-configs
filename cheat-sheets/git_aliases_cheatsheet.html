@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheat Sheet Git Aliases</title>
+<style>
+:root{
+  --bg:#0b1020;
+  --card:#111a33;
+  --card2:#0f1730;
+  --text:#e9eefc;
+  --muted:#a9b5d6;
+  --accent:#6aa6ff;
+  --accent2:#6dffb1;
+  --warn:#ffcc66;
+  --danger:#ff6a8a;
+  --border:rgba(255,255,255,.14);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.35}
+.page{padding:34px 36px 28px 36px}
+h1{margin:0 0 10px 0;font-size:30px;letter-spacing:.2px}
+h2{margin:20px 0 10px 0;font-size:18px;color:var(--text)}
+h3{margin:14px 0 8px 0;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+p{margin:8px 0;color:var(--muted)}
+.small{font-size:11px;color:var(--muted)}
+.badge{display:inline-block;padding:3px 8px;border:1px solid var(--border);border-radius:999px;font-size:11px;color:var(--muted)}
+.kbd{font-family:var(--mono);font-size:11px;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:6px;background:rgba(255,255,255,.06)}
+hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:16px;padding:14px 14px 12px 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--border);border-radius:14px}
+.table th,.table td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.table th{background:rgba(255,255,255,.06);text-align:left;font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.table tr:last-child td{border-bottom:none}
+code,.code{font-family:var(--mono);font-size:11.5px;color:#eaf2ff}
+pre{margin:8px 0 0 0;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.04);overflow:hidden}
+.callout{border-radius:16px;padding:12px 14px;border:1px solid var(--border);background:rgba(255,255,255,.04)}
+.callout.warn{border-color:rgba(255,204,102,.45);background:rgba(255,204,102,.07)}
+.callout.danger{border-color:rgba(255,106,138,.55);background:rgba(255,106,138,.07)}
+.callout.good{border-color:rgba(109,255,177,.45);background:rgba(109,255,177,.06)}
+.callout .title{font-weight:650;color:var(--text);margin-bottom:4px}
+.tag{display:inline-block;margin:2px 6px 0 0;padding:2px 7px;border-radius:999px;font-size:10.5px;border:1px solid var(--border);color:var(--muted)}
+.footer{margin-top:12px;display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:10.5px}
+.pagebreak{page-break-after:always}
+a{color:var(--accent);text-decoration:none}
+ul{margin:8px 0 8px 18px;color:var(--muted)}
+li{margin:3px 0}
+.twoCol{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}
+</style>
+</head>
+<body>
+
+
+<div class="page">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
+      <div>
+        <div class="badge">Git • Aliases Globais</div>
+        <h1>Cheat Sheet — Seus atalhos de Git</h1>
+        <p>Um guia rápido (com exemplos) para os aliases personalizados do seu <span class="kbd">~/.gitconfig</span> que você usa no dia a dia.</p>
+        <div style="margin-top:10px">
+          <span class="tag">config</span>
+          <span class="tag">branches</span>
+          <span class="tag">status</span>
+          <span class="tag">fetch</span>
+          <span class="tag">stash</span>
+          <span class="tag">tags</span>
+          <span class="tag">worktree</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="small">Data: 03/03/2026</div>
+        <div class="small">Formato: pt-BR</div>
+        <div class="small">Escopo: aliases globais</div>
+      </div>
+    </div>
+    <hr>
+    <div class="twoCol">
+      <div class="callout good">
+        <div class="title">Como usar</div>
+        <div class="small">Todos os exemplos assumem que você está dentro de um repositório Git (exceto <code>git ce</code>).</div>
+        <pre><code>git &lt;alias&gt; [args...]</code></pre>
+        <div class="small" style="margin-top:8px">Exemplo:</div>
+        <pre><code>git bb feature/minha-feature
+git ss</code></pre>
+      </div>
+      <div class="callout">
+        <div class="title">Dica rápida</div>
+        <ul>
+          <li><code>switch</code> (<code>git b</code>/<code>git bb</code>) é a forma moderna de trocar/criar branches.</li>
+          <li><code>checkout</code> (<code>git co</code>/<code>git cb</code>) continua útil para restaurar arquivos.</li>
+          <li>Aliases com <code>!</code> executam shell (funções), então aceitam parâmetros e podem fazer várias etapas.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      <div>Feito para: seus atalhos (Git Global)</div>
+      <div>Atalhos incluídos: 16</div>
+    </div>
+  </div>
+</div>
+<div class="pagebreak"></div>
+
+
+
+<div class="page">
+  <h2>Resumo — tabela de referência rápida</h2>
+  <p>Use esta tabela como “cola” do dia a dia: alias → comando real → intenção → exemplo.</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="width:16%">Alias</th>
+        <th style="width:24%">Expande para</th>
+        <th style="width:34%">Para que serve</th>
+        <th style="width:26%">Exemplos</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+<tr>
+  <td><code>git ce</code><div class="small" style="margin-top:4px">Config</div></td>
+  <td><code>config --global --edit</code></td>
+  <td>Abre o arquivo de configuração global do Git (~/.gitconfig) no editor padrão.</td>
+  <td><code>git ce</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git stash-staged</code><div class="small" style="margin-top:4px">Stash</div></td>
+  <td><code>stash push --staged -m "staged"</code></td>
+  <td>Faz stash apenas do que está em *staged* (index), com mensagem "staged".</td>
+  <td><code>git stash-staged</code><br><code>git add -p && git stash-staged</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git cb</code><div class="small" style="margin-top:4px">Branches</div></td>
+  <td><code>checkout -b</code></td>
+  <td>Cria e já troca para uma nova branch (modo antigo com checkout).</td>
+  <td><code>git cb feature/login</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git co</code><div class="small" style="margin-top:4px">Branches</div></td>
+  <td><code>checkout</code></td>
+  <td>Troca de branch / restaura paths (comportamento do checkout).</td>
+  <td><code>git co main</code><br><code>git co -- README.md</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git bb</code><div class="small" style="margin-top:4px">Branches</div></td>
+  <td><code>switch -b</code></td>
+  <td>Cria e já troca para uma nova branch (modo moderno com switch).</td>
+  <td><code>git bb feature/login</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git b</code><div class="small" style="margin-top:4px">Branches</div></td>
+  <td><code>switch</code></td>
+  <td>Troca de branch (modo moderno com switch).</td>
+  <td><code>git b main</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git s</code><div class="small" style="margin-top:4px">Status</div></td>
+  <td><code>status</code></td>
+  <td>Mostra o status completo do repositório.</td>
+  <td><code>git s</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git ss</code><div class="small" style="margin-top:4px">Status</div></td>
+  <td><code>status -s</code></td>
+  <td>Mostra o status em formato curto (por linha).</td>
+  <td><code>git ss</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git fa</code><div class="small" style="margin-top:4px">Sync</div></td>
+  <td><code>fetch --all</code></td>
+  <td>Atualiza refs remotas de *todos* os remotes.</td>
+  <td><code>git fa</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git fap</code><div class="small" style="margin-top:4px">Sync</div></td>
+  <td><code>fetch --all -p</code></td>
+  <td>Fetch em todos os remotes e remove refs remotas apagadas (prune).</td>
+  <td><code>git fap</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git tg</code><div class="small" style="margin-top:4px">Tags</div></td>
+  <td><code>tag -l --sort=v:refname</code></td>
+  <td>Lista tags ordenadas por versão (útil para releases semânticos).</td>
+  <td><code>git tg</code><br><code>git tg | tail -n 20</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git rb</code><div class="small" style="margin-top:4px">Cleanup</div></td>
+  <td><code>branch -D</code></td>
+  <td>Apaga branch local à força (mesmo sem merge).</td>
+  <td><code>git rb feature/old-experiment</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git rtag</code><div class="small" style="margin-top:4px">Tags</div></td>
+  <td><code>(shell) remove tag local e remota</code></td>
+  <td>Remove uma tag localmente e também no remoto (default: origin). Aceita `git rtag <tag>` ou `git rtag <remote> <tag>`.</td>
+  <td><code>git rtag v1.2.3</code><br><code>git rtag upstream v1.2.3</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git ignore</code><div class="small" style="margin-top:4px">Utils</div></td>
+  <td><code>(shell) baixa templates do gitignore.io (Toptal)</code></td>
+  <td>Gera conteúdo de .gitignore via API: `git ignore node,macos,windows` (imprime no stdout).</td>
+  <td><code>git ignore macos,windows,node > .gitignore</code><br><code>git ignore python,venv,visualstudiocode > .gitignore</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git prw</code><div class="small" style="margin-top:4px">PR Worktree</div></td>
+  <td><code>(shell) worktree para PR do GitHub</code></td>
+  <td>Cria um worktree para um PR (GitHub) buscando `pull/<num>/head` e abrindo em `../pr-<num>`.</td>
+  <td><code>git prw 123</code><br><code>git prw 123 upstream</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git prwrm</code><div class="small" style="margin-top:4px">PR Worktree</div></td>
+  <td><code>(shell) remove worktree do PR</code></td>
+  <td>Remove o worktree `../pr-<num>`, deleta a branch local `pr-<num>` e confirma.</td>
+  <td><code>git prwrm 123</code></td>
+</tr>
+
+    </tbody>
+  </table>
+  <div class="footer">
+    <div class="small">Legenda: aliases “(shell)” rodam via <code>!</code> e aceitam parâmetros.</div>
+    <div class="small">Página 2</div>
+  </div>
+</div>
+<div class="pagebreak"></div>
+
+
+
+<div class="page">
+  <h2>Detalhes por categoria (com dicas)</h2>
+  <p>Aqui você encontra explicações rápidas, quando usar e exemplos típicos por grupo.</p>
+  
+<h3>Config</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Config</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git ce</code></h2>
+      <div class="small">Expande para: <code>config --global --edit</code></div>
+    </div>
+  </div>
+  <p>Abre o arquivo de configuração global do Git (~/.gitconfig) no editor padrão.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git ce</code></li></ul>
+</div>
+
+</div>
+
+<h3>Status</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Status</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git s</code></h2>
+      <div class="small">Expande para: <code>status</code></div>
+    </div>
+  </div>
+  <p>Mostra o status completo do repositório.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git s</code></li></ul>
+</div>
+
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Status</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git ss</code></h2>
+      <div class="small">Expande para: <code>status -s</code></div>
+    </div>
+  </div>
+  <p>Mostra o status em formato curto (por linha).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git ss</code></li></ul>
+</div>
+
+</div>
+
+<h3>Branches</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Branches</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git cb</code></h2>
+      <div class="small">Expande para: <code>checkout -b</code></div>
+    </div>
+  </div>
+  <p>Cria e já troca para uma nova branch (modo antigo com checkout).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git cb feature/login</code></li></ul>
+</div>
+
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Branches</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git co</code></h2>
+      <div class="small">Expande para: <code>checkout</code></div>
+    </div>
+  </div>
+  <p>Troca de branch / restaura paths (comportamento do checkout).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git co main</code></li>
+<li><code>git co -- README.md</code></li></ul>
+</div>
+
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Branches</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git bb</code></h2>
+      <div class="small">Expande para: <code>switch -b</code></div>
+    </div>
+  </div>
+  <p>Cria e já troca para uma nova branch (modo moderno com switch).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git bb feature/login</code></li></ul>
+</div>
+
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Branches</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git b</code></h2>
+      <div class="small">Expande para: <code>switch</code></div>
+    </div>
+  </div>
+  <p>Troca de branch (modo moderno com switch).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git b main</code></li></ul>
+</div>
+
+</div>
+
+<h3>Sync</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Sync</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git fa</code></h2>
+      <div class="small">Expande para: <code>fetch --all</code></div>
+    </div>
+  </div>
+  <p>Atualiza refs remotas de *todos* os remotes.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git fa</code></li></ul>
+</div>
+
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Sync</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git fap</code></h2>
+      <div class="small">Expande para: <code>fetch --all -p</code></div>
+    </div>
+  </div>
+  <p>Fetch em todos os remotes e remove refs remotas apagadas (prune).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git fap</code></li></ul>
+</div>
+
+</div>
+
+<h3>Stash</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Stash</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git stash-staged</code></h2>
+      <div class="small">Expande para: <code>stash push --staged -m "staged"</code></div>
+    </div>
+  </div>
+  <p>Faz stash apenas do que está em *staged* (index), com mensagem "staged".</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git stash-staged</code></li>
+<li><code>git add -p && git stash-staged</code></li></ul>
+</div>
+
+</div>
+
+<h3>Tags</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Tags</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git tg</code></h2>
+      <div class="small">Expande para: <code>tag -l --sort=v:refname</code></div>
+    </div>
+  </div>
+  <p>Lista tags ordenadas por versão (útil para releases semânticos).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git tg</code></li>
+<li><code>git tg | tail -n 20</code></li></ul>
+</div>
+
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Tags</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git rtag</code></h2>
+      <div class="small">Expande para: <code>(shell) remove tag local e remota</code></div>
+    </div>
+  </div>
+  <p>Remove uma tag localmente e também no remoto (default: origin). Aceita `git rtag <tag>` ou `git rtag <remote> <tag>`.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git rtag v1.2.3</code></li>
+<li><code>git rtag upstream v1.2.3</code></li></ul>
+</div>
+
+</div>
+
+<h3>Cleanup</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Cleanup</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git rb</code></h2>
+      <div class="small">Expande para: <code>branch -D</code></div>
+    </div>
+  </div>
+  <p>Apaga branch local à força (mesmo sem merge).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git rb feature/old-experiment</code></li></ul>
+</div>
+
+</div>
+
+<h3>Utils</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Utils</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git ignore</code></h2>
+      <div class="small">Expande para: <code>(shell) baixa templates do gitignore.io (Toptal)</code></div>
+    </div>
+  </div>
+  <p>Gera conteúdo de .gitignore via API: `git ignore node,macos,windows` (imprime no stdout).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git ignore macos,windows,node > .gitignore</code></li>
+<li><code>git ignore python,venv,visualstudiocode > .gitignore</code></li></ul>
+</div>
+
+</div>
+
+<h3>PR Worktree</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">PR Worktree</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git prw</code></h2>
+      <div class="small">Expande para: <code>(shell) worktree para PR do GitHub</code></div>
+    </div>
+  </div>
+  <p>Cria um worktree para um PR (GitHub) buscando `pull/<num>/head` e abrindo em `../pr-<num>`.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git prw 123</code></li>
+<li><code>git prw 123 upstream</code></li></ul>
+</div>
+
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">PR Worktree</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git prwrm</code></h2>
+      <div class="small">Expande para: <code>(shell) remove worktree do PR</code></div>
+    </div>
+  </div>
+  <p>Remove o worktree `../pr-<num>`, deleta a branch local `pr-<num>` e confirma.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git prwrm 123</code></li></ul>
+</div>
+
+</div>
+
+  
+<div class="callout warn" style="margin-top:14px">
+  <div class="title">Atenção: comandos destrutivos</div>
+  <ul>
+    <li><code>git rb</code> usa <code>branch -D</code>: apaga a branch local mesmo sem merge.</li>
+    <li><code>git rtag</code> remove tag no remoto: isso afeta quem depende daquela tag (CI/CD, releases, etc.).</li>
+  </ul>
+</div>
+
+  <div class="footer">
+    <div class="small">Dica: prefira <code>git b</code>/<code>git bb</code> para branches; use <code>git co</code quando precisar restaurar arquivos.</div>
+    <div class="small">Página 3</div>
+  </div>
+</div>
+<div class="pagebreak"></div>
+
+
+
+<div class="page">
+  <h2>Fluxos práticos (receitas rápidas)</h2>
+  <p>Combinações comuns de aliases para tarefas reais do dia a dia.</p>
+
+  <div class="grid3">
+    <div class="callout good">
+      <div class="title">Criar branch nova (moderno)</div>
+      <div class="small">Cria e troca para a branch:</div>
+      <pre><code>git bb feature/minha-feature</code></pre>
+      <div class="small">Depois verifique:</div>
+      <pre><code>git ss</code></pre>
+    </div>
+
+    <div class="callout">
+      <div class="title">Trocar de branch</div>
+      <div class="small">Troca para <code>main</code> (moderno):</div>
+      <pre><code>git b main</code></pre>
+      <div class="small">Versão clássica:</div>
+      <pre><code>git co main</code></pre>
+    </div>
+
+    <div class="callout">
+      <div class="title">Checkout para restaurar arquivo</div>
+      <div class="small">Útil quando você quer “voltar” um arquivo:</div>
+      <pre><code>git co -- README.md</code></pre>
+      <div class="small">Dica: isso descarta mudanças não commitadas no arquivo.</div>
+    </div>
+  </div>
+
+  <div style="height:10px"></div>
+
+  <div class="grid">
+    <div class="callout">
+      <div class="title">Atualizar tudo (todos remotes)</div>
+      <div class="small">Somente atualizar refs:</div>
+      <pre><code>git fa</code></pre>
+      <div class="small">Atualizar + limpar branches remotas apagadas:</div>
+      <pre><code>git fap</code></pre>
+      <div class="small">Quando usar <code>-p</code>: depois de merges/deletes no servidor (ex.: PRs fechados).</div>
+    </div>
+
+    <div class="callout good">
+      <div class="title">Stash só do que está staged</div>
+      <div class="small">Fluxo típico:</div>
+      <pre><code>git add -p
+git stash-staged</code></pre>
+      <div class="small">Você “guarda” o que já estava pronto (index), sem mexer no resto do working tree.</div>
+    </div>
+  </div>
+
+  <div style="height:10px"></div>
+
+  <div class="grid">
+    <div class="callout warn">
+      <div class="title">Remover tag local + remota</div>
+      <div class="small">Remove a tag <code>v1.2.3</code> (default remote: origin):</div>
+      <pre><code>git rtag v1.2.3</code></pre>
+      <div class="small">Remover em outro remoto:</div>
+      <pre><code>git rtag upstream v1.2.3</code></pre>
+      <div class="small">Esse alias tenta deletar localmente (se existir) e depois remove no remoto via push de ref vazia.</div>
+    </div>
+
+    <div class="callout">
+      <div class="title">Gerar .gitignore na hora</div>
+      <div class="small">Gera e salva em arquivo:</div>
+      <pre><code>git ignore macos,windows,node &gt; .gitignore</code></pre>
+      <div class="small">Dica: revise e comite o <code>.gitignore</code> no repositório.</div>
+    </div>
+  </div>
+
+  <div style="height:10px"></div>
+
+  <div class="callout good">
+    <div class="title">Trabalhar em PR com worktree (GitHub)</div>
+    <div class="small">Ideal para revisar PR sem bagunçar sua working tree atual.</div>
+    <pre><code># cria worktree em ../pr-123 e entra no diretório
+git prw 123
+
+# ...trabalhe/revise, rode testes, etc...
+
+# remove worktree e apaga a branch local pr-123
+git prwrm 123</code></pre>
+    <div class="small">Observação: esse fluxo assume PRs acessíveis via ref <code>pull/&lt;num&gt;/head</code> no remoto (padrão do GitHub).</div>
+  </div>
+
+  <div class="footer">
+    <div class="small">Sugestão: use worktrees para reviews e hotfixes sem “poluir” sua árvore principal.</div>
+    <div class="small">Página 4</div>
+  </div>
+</div>
+<div class="pagebreak"></div>
+
+
+
+<div class="page">
+  <h2>Notas técnicas (o que os aliases “shell” realmente fazem)</h2>
+  <p>Esses atalhos usam <code>!</code> no gitconfig: o Git executa uma função no shell. Bom para automatizar fluxos completos.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>git rtag</h3>
+      <p><b>Objetivo:</b> remover tag local e no remoto.</p>
+      <div class="small">Assinaturas aceitas:</div>
+      <pre><code>git rtag &lt;tag&gt;
+git rtag &lt;remote&gt; &lt;tag&gt;</code></pre>
+      <div class="small">Comportamento importante:</div>
+      <ul>
+        <li>Se você não passar remote, usa <code>origin</code>.</li>
+        <li>Tenta deletar a tag local (ignora erro se ela não existe).</li>
+        <li>Remove no remoto via: <code>git push &lt;remote&gt; ":refs/tags/&lt;tag&gt;"</code></li>
+      </ul>
+      <div class="callout warn" style="margin-top:10px">
+        <div class="title">Cuidado</div>
+        <div class="small">Remover tags pode quebrar releases, pipelines e links de comparação. Use quando você tiver certeza.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>git ignore</h3>
+      <p><b>Objetivo:</b> buscar templates de <code>.gitignore</code> por nome (API da Toptal/gitignore).</p>
+      <div class="small">Exemplos comuns:</div>
+      <pre><code>git ignore python,venv,visualstudiocode &gt; .gitignore
+git ignore node,macos,windows &gt; .gitignore</code></pre>
+      <div class="small">Dica:</div>
+      <ul>
+        <li>Você pode concatenar templates com vírgula.</li>
+        <li>Se quiser apenas visualizar, rode sem redirecionar.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>git prw</h3>
+      <p><b>Objetivo:</b> criar um worktree para revisar/rodar testes de um PR sem trocar sua árvore atual.</p>
+      <div class="small">Como funciona (alto nível):</div>
+      <ul>
+        <li>Define <code>branch=pr-&lt;num&gt;</code> e <code>dir=../pr-&lt;num&gt;</code></li>
+        <li>Faz <code>fetch</code> do PR e cria a branch local</li>
+        <li>Cria o worktree e entra no diretório</li>
+      </ul>
+      <pre><code>git prw 123
+git prw 123 upstream</code></pre>
+      <div class="small">Quando falha:</div>
+      <ul>
+        <li>Se o remoto não expõe refs <code>pull/&lt;num&gt;/head</code> (fora do padrão do GitHub).</li>
+        <li>Se já existe <code>../pr-&lt;num&gt;</code> ou a branch <code>pr-&lt;num&gt;</code>.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>git prwrm</h3>
+      <p><b>Objetivo:</b> remover o worktree e limpar a branch local do PR.</p>
+      <pre><code>git prwrm 123</code></pre>
+      <ul>
+        <li>Remove <code>../pr-123</code> via <code>git worktree remove</code></li>
+        <li>Apaga a branch local via <code>git branch -D pr-123</code></li>
+      </ul>
+      <div class="callout warn" style="margin-top:10px">
+        <div class="title">Cuidado</div>
+        <div class="small">Se você tiver commits locais não enviados na branch <code>pr-123</code>, eles serão perdidos.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:14px">
+    <div class="title">Checklist rápido de segurança</div>
+    <ul>
+      <li>Antes de <code>git rb</code>: confirme se não tem commits locais importantes.</li>
+      <li>Antes de <code>git rtag</code>: confirme o nome exato da tag (ex.: <code>git tg</code>).</li>
+      <li>Antes de <code>git prwrm</code>: garanta que nada valioso ficou dentro do worktree do PR.</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <div class="small">Fim da cheat sheet — personalize à vontade e mantenha seus aliases documentados.</div>
+    <div class="small">Página 5</div>
+  </div>
+</div>
+
+
+</body>
+</html>
