@@ -100,7 +100,7 @@ git ss</code></pre>
     </div>
     <div class="footer">
       <div>Feito para: seus atalhos (Git Global)</div>
-      <div>Atalhos incluídos: 16</div>
+      <div>Atalhos incluídos: 17</div>
     </div>
   </div>
 </div>
@@ -247,6 +247,14 @@ git ss</code></pre>
   <td><code>(shell) remove worktree do PR</code></td>
   <td>Remove o worktree `../pr-<num>`, deleta a branch local `pr-<num>` e confirma.</td>
   <td><code>git prwrm 123</code></td>
+</tr>
+
+
+<tr>
+  <td><code>git pprw</code><div class="small" style="margin-top:4px">PR Worktree</div></td>
+  <td><code>(shell) push para branch do PR via gh</code></td>
+  <td>Faz push do HEAD atual para a branch remota do PR (fork ou mesmo repo). Usa `gh` para descobrir o repo e a branch do PR automaticamente.</td>
+  <td><code>git pprw 123</code></td>
 </tr>
 
     </tbody>
@@ -528,6 +536,23 @@ git ss</code></pre>
   <ul><li><code>git prwrm 123</code></li></ul>
 </div>
 
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">PR Worktree</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>git pprw</code></h2>
+      <div class="small">Expande para: <code>(shell) push para branch do PR via gh</code></div>
+    </div>
+  </div>
+  <p>Faz push do HEAD atual para a branch remota do PR (mesmo repo ou fork). Usa <code>gh</code> para descobrir automaticamente o repositório e a branch do PR.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>git pprw 123</code></li></ul>
+  <div class="callout warn" style="margin-top:8px;padding:8px 10px">
+    <div class="small">Requer <code>gh</code> CLI instalado e autenticado. Avisa se a branch atual não for <code>pr-&lt;num&gt;</code>.</div>
+  </div>
+</div>
+
 </div>
 
   
@@ -628,9 +653,12 @@ git prw 123
 
 # ...trabalhe/revise, rode testes, etc...
 
+# envia seus commits de volta para a branch do PR
+git pprw 123
+
 # remove worktree e apaga a branch local pr-123
 git prwrm 123</code></pre>
-    <div class="small">Observação: esse fluxo assume PRs acessíveis via ref <code>pull/&lt;num&gt;/head</code> no remoto (padrão do GitHub).</div>
+    <div class="small">Observação: <code>prw</code> assume refs <code>pull/&lt;num&gt;/head</code> (padrão GitHub). <code>pprw</code> requer <code>gh</code> CLI.</div>
   </div>
 
   <div class="footer">
@@ -706,7 +734,30 @@ git prw 123 upstream</code></pre>
       </ul>
       <div class="callout warn" style="margin-top:10px">
         <div class="title">Cuidado</div>
-        <div class="small">Se você tiver commits locais não enviados na branch <code>pr-123</code>, eles serão perdidos.</div>
+        <div class="small">Se você tiver commits locais não enviados na branch <code>pr-123</code>, eles serão perdidos. Use <code>git pprw</code> antes!</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>git pprw</h3>
+      <p><b>Objetivo:</b> fazer push dos seus commits locais para a branch remota de um PR (mesmo repo ou fork).</p>
+      <div class="small">Assinatura:</div>
+      <pre><code>git pprw &lt;pr-number&gt;</code></pre>
+      <div class="small">Como funciona (alto nível):</div>
+      <ul>
+        <li>Usa <code>gh pr view</code> para descobrir a branch (<code>headRefName</code>) e o repositório (<code>sshUrl</code>) do PR.</li>
+        <li>Adiciona um remote temporário (<code>prw-&lt;num&gt;</code>) apontando para o repo do PR.</li>
+        <li>Faz <code>git push</code> do HEAD atual para a branch do PR.</li>
+        <li>Remove o remote temporário após o push.</li>
+      </ul>
+      <div class="small">Quando falha:</div>
+      <ul>
+        <li>Se <code>gh</code> CLI não estiver instalado ou autenticado.</li>
+        <li>Se você não tiver permissão de push no repositório do PR (ex.: fork de terceiro).</li>
+      </ul>
+      <div class="callout warn" style="margin-top:10px">
+        <div class="title">Atenção</div>
+        <div class="small">Se a branch atual não for <code>pr-&lt;num&gt;</code>, o alias avisa mas faz push do HEAD mesmo assim.</div>
       </div>
     </div>
   </div>
@@ -717,6 +768,7 @@ git prw 123 upstream</code></pre>
       <li>Antes de <code>git rb</code>: confirme se não tem commits locais importantes.</li>
       <li>Antes de <code>git rtag</code>: confirme o nome exato da tag (ex.: <code>git tg</code>).</li>
       <li>Antes de <code>git prwrm</code>: garanta que nada valioso ficou dentro do worktree do PR.</li>
+      <li>Antes de <code>git pprw</code>: confirme que o HEAD contém apenas as mudanças desejadas (ex.: <code>git log --oneline</code>).</li>
     </ul>
   </div>
 
