@@ -118,9 +118,8 @@ source $ZSH/oh-my-zsh.sh
 eval "$(starship init zsh)"
 
 # General Aliases
-alias zshconfig="xed ~/.zshrc"
 alias size="tree -L 1 -h"
-alias zsh-change="vi ~/.zshrc"
+alias zsh-edit="xed ~/.zshrc"
 alias zsh-update="source ~/.zshrc"
 
 #kubernetes
@@ -221,7 +220,6 @@ load-nvmrc
 export PATH="$(npm config get prefix)/bin:$PATH"
 # 🛠️ Hoisel Scripts CLI
 export PATH="$HOME/.local/bin:$HOME/scripts/bin:$PATH"
-
 export EDITOR=/usr/bin/xed
 
 # Load secrets (tokens, API keys) from a separate file not tracked by git
