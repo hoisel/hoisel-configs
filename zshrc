@@ -233,3 +233,38 @@ alias claude-full='claude --dangerously-skip-permissions'
 alias scripts="cd ~/scripts && git st"
 
 add_export() { local line="export $1"; grep -q "$line" ~/.zshrc || echo "$line" >> ~/.zshrc; source ~/.zshrc; echo "✅ $line adicionado ao ~/.zshrc"; }
+
+############################ Postgres Envs, SSH ############################
+export PATH="/usr/lib/postgresql/16/bin:$PATH"
+alias pg_14='/usr/lib/postgresql/14/bin/psql'
+alias pg_16='/usr/lib/postgresql/16/bin/psql'
+alias pg_dump_14='/usr/lib/postgresql/14/bin/pg_dump'
+alias pg_dump_16='/usr/lib/postgresql/16/bin/pg_dump'
+
+ssh-tunnel-namecoach-prod() {
+  ssh -i ~/.ssh/id_namecoach \
+  -L 5435:prodevents.cwnulposwkkl.us-east-2.rds.amazonaws.com:5432 \
+  daniel@3.20.193.239
+}
+
+psql-namecoach-eventsdb-prod() {
+  PGPASSWORD="$NAMECOACH_PROD_DB_PASSWORD" psql \
+  -h localhost \
+  -p 5435 \
+  -U events_admin \
+  -d events_api
+}
+
+ddl-namecoach-eventsdb-prod() {
+  ts=$(date +"%Y%m%d-%H%M%S")
+
+  PGPASSWORD="$NAMECOACH_PROD_DB_PASSWORD" pg_dump_16 \
+  -h localhost \
+  -p 5435 \
+  -U events_admin \
+  -d events_api \
+  --schema-only \
+  --no-owner \
+  --no-privileges \
+  > "ddl-eventsdb-prod-${ts}.sql"
+}
