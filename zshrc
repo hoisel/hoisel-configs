@@ -337,3 +337,85 @@ aliases() {
     | sort
 }
 
+
+############################ Dev ############################
+open-worktree() {
+  local dir
+  dir=$(git worktree list | fzf | awk '{print $1}') || return
+  windsurf "$dir"
+}
+
+
+sync-envs() {
+  local env_root="$1"
+  local repo_root
+  local src rel dest dest_dir
+  local copied_count=0
+  local error_count=0
+
+  if [[ -z "$env_root" ]]; then
+    echo "Uso: sync-envs <env-root>"
+    return 1
+  fi
+
+  repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+    echo "Erro: execute esta função dentro de uma worktree/repositório Git."
+    return 1
+  }
+
+  if [[ ! -d "$env_root" ]]; then
+    echo "Erro: diretório de envs não encontrado: $env_root"
+    return 1
+  fi
+
+  while IFS= read -r -d '' src; do
+    rel="${src#$env_root/}"
+    dest="$repo_root/$rel"
+    dest_dir="$(dirname "$dest")"
+
+    if [[ ! -f "$src" ]]; then
+      echo "Arquivo de origem não encontrado: $src"
+      ((error_count++))
+      continue
+    fi
+
+    mkdir -p "$dest_dir" || {
+      echo "Erro ao criar diretório: $dest_dir"
+      ((error_count++))
+      continue
+    }
+
+    cp -f "$src" "$dest" || {
+      echo "Erro ao copiar: $rel"
+      ((error_count++))
+      continue
+    }
+
+    echo "copied: $rel"
+    ((copied_count++))
+  done < <(find "$env_root" -type f \( -name '.env' -o -name '.env.*' \) -print0)
+
+  echo
+  echo "Concluído: $copied_count arquivo(s) copiado(s), $error_count erro(s)."
+}
+
+open-windsurf-here() {
+  local repo_root
+
+  repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+    echo "Erro: não foi possível localizar a raiz do repositório."
+    return 1
+  }
+
+  windsurf "$repo_root"
+}
+
+sync-envs-and-open-windsurf() {
+  sync-envs "$1" || return 1
+  open-windsurf-here
+}
+
+alias sync-envs-vcs='sync-envs-and-open-windsurf ~/Dev/Professional/NameCoach/.envs/phonetic_vcs'
+alias sync-envs-fe='sync-envs-and-open-windsurf ~/Dev/Professional/NameCoach/.envs/namecoach-fe'
+
+
