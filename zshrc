@@ -315,3 +315,25 @@ ulauncher-refresh() {
 }
 
 
+
+############################ Utils ############################
+what() {
+  for cmd in "$@"; do
+    echo "----- $cmd -----"
+    type "$cmd"
+    command -v "$cmd"
+    echo
+  done
+}
+
+aliases() {
+  echo "=== ALIASES ==="
+  alias
+  echo
+
+  echo "=== CUSTOM FUNCTIONS (.zshrc) ==="
+  grep -E '^[[:space:]]*[a-zA-Z_][a-zA-Z0-9_-]*[[:space:]]*\(\)[[:space:]]*\{' ~/.zshrc \
+    | sed -E 's/^[[:space:]]*([a-zA-Z_][a-zA-Z0-9_-]*)[[:space:]]*\(\)[[:space:]]*\{/\1/' \
+    | sort
+}
+
