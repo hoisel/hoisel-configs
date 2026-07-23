@@ -25,6 +25,7 @@
     ignore = "!gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}; gi"
 	prw = "!f() {\n  num=\"$1\";\n  remote=\"${2:-origin}\";\n  branch=\"pr-$num\";\n  dir=\"../pr-$num\";\n  git fetch \"$remote\" \"pull/$num/head:$branch\" &&\n  git worktree add \"$dir\" \"$branch\" &&\n  echo \"✅ Worktree para PR #$num criada em $dir\" &&\n  cd \"$dir\";\n}; f"
 	prwrm = "!f() {\n  num=\"$1\";\n  dir=\"../pr-$num\";\n  git worktree remove \"$dir\" &&\n  git branch -D \"pr-$num\" &&\n  echo \"✅ Worktree PR #$num removida de $dir\";\n}; f"
+	pprw = "!f() { current=$(git rev-parse --abbrev-ref HEAD); case \"$current\" in pr-*) pr=\"${current#pr-}\" ;; *) echo \"❌ Current branch '$current' is not a prw branch (expected: pr-<number>)\" >&2; return 1 ;; esac; branch=$(gh pr view \"$pr\" --json headRefName --jq '.headRefName') || return 1; if [ -z \"$branch\" ] || [ \"$branch\" = \"null\" ]; then echo \"❌ Could not resolve remote head branch for PR #$pr\" >&2; return 1; fi; echo \"🚀 Pushing local HEAD from '$current' to origin:$branch (PR #$pr)\"; git push origin HEAD:\"$branch\"; }; f"
 [credential "https://github.com"]
     helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
