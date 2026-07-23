@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheat Sheet Tmux</title>
+<style>
+:root{
+  --bg:#0b1020;
+  --card:#111a33;
+  --card2:#0f1730;
+  --text:#e9eefc;
+  --muted:#a9b5d6;
+  --accent:#6aa6ff;
+  --accent2:#6dffb1;
+  --warn:#ffcc66;
+  --danger:#ff6a8a;
+  --border:rgba(255,255,255,.14);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.35}
+.page{padding:34px 36px 28px 36px}
+h1{margin:0 0 10px 0;font-size:30px;letter-spacing:.2px}
+h2{margin:20px 0 10px 0;font-size:18px;color:var(--text)}
+h3{margin:14px 0 8px 0;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+p{margin:8px 0;color:var(--muted)}
+.small{font-size:11px;color:var(--muted)}
+.badge{display:inline-block;padding:3px 8px;border:1px solid var(--border);border-radius:999px;font-size:11px;color:var(--muted)}
+.kbd{font-family:var(--mono);font-size:11px;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:6px;background:rgba(255,255,255,.06)}
+hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:16px;padding:14px 14px 12px 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--border);border-radius:14px}
+.table th,.table td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.table th{background:rgba(255,255,255,.06);text-align:left;font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.table tr:last-child td{border-bottom:none}
+code,.code{font-family:var(--mono);font-size:11.5px;color:#eaf2ff}
+pre{margin:8px 0 0 0;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.04);overflow:hidden}
+.callout{border-radius:16px;padding:12px 14px;border:1px solid var(--border);background:rgba(255,255,255,.04)}
+.callout.warn{border-color:rgba(255,204,102,.45);background:rgba(255,204,102,.07)}
+.callout.danger{border-color:rgba(255,106,138,.55);background:rgba(255,106,138,.07)}
+.callout.good{border-color:rgba(109,255,177,.45);background:rgba(109,255,177,.06)}
+.callout .title{font-weight:650;color:var(--text);margin-bottom:4px}
+.tag{display:inline-block;margin:2px 6px 0 0;padding:2px 7px;border-radius:999px;font-size:10.5px;border:1px solid var(--border);color:var(--muted)}
+.footer{margin-top:12px;display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:10.5px}
+.pagebreak{page-break-after:always}
+a{color:var(--accent);text-decoration:none}
+ul{margin:8px 0 8px 18px;color:var(--muted)}
+li{margin:3px 0}
+.twoCol{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}
+</style>
+</head>
+<body>
+
+
+<div class="page">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
+      <div>
+        <div class="badge">Tmux • Config pessoal</div>
+        <h1>Cheat Sheet — Seus atalhos de Tmux</h1>
+        <p>Um guia rápido (com exemplos) para as configurações e atalhos personalizados do seu <span class="kbd">~/.tmux.conf</span> que você usa no dia a dia.</p>
+        <div style="margin-top:10px">
+          <span class="tag">prefix</span>
+          <span class="tag">panes</span>
+          <span class="tag">windows</span>
+          <span class="tag">mouse</span>
+          <span class="tag">split</span>
+          <span class="tag">layout</span>
+          <span class="tag">sync</span>
+          <span class="tag">fzf</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="small">Data: 23/07/2026</div>
+        <div class="small">Formato: pt-BR</div>
+        <div class="small">Escopo: ~/.tmux.conf pessoal</div>
+      </div>
+    </div>
+    <hr>
+    <div class="twoCol">
+      <div class="callout good">
+        <div class="title">Como usar</div>
+        <div class="small">Seu prefixo é <code>Ctrl+a</code> (não o padrão <code>Ctrl+b</code>). Atalhos marcados como "sem prefixo" funcionam direto, sem apertar o prefixo antes.</div>
+        <pre><code>Ctrl+a &lt;tecla&gt;   # atalho normal (com prefixo)
+Alt+seta         # atalho direto (sem prefixo)</code></pre>
+        <div class="small" style="margin-top:8px">Exemplo:</div>
+        <pre><code>Ctrl+a c     # nova window
+Ctrl+a r     # recarrega o ~/.tmux.conf</code></pre>
+      </div>
+      <div class="callout">
+        <div class="title">Dica rápida</div>
+        <ul>
+          <li>Mouse está ligado (<code>mouse on</code>): dá pra clicar, arrastar borda de pane e trocar de window na status bar.</li>
+          <li><code>escape-time 0</code> deixa o prefixo e o Alt/Esc mais responsivos (sem delay perceptível).</li>
+          <li>Janelas e panes começam em <code>1</code>, não em <code>0</code> — alinhado com o teclado numérico.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      <div>Feito para: sua config (Tmux pessoal)</div>
+      <div>Atalhos incluídos: 26</div>
+    </div>
+  </div>
+</div>
+<div class="pagebreak"></div>
+
+
+
+<div class="page">
+  <h2>Resumo — tabela de referência rápida</h2>
+  <p>Use esta tabela como “cola” do dia a dia: atalho → comando tmux → intenção → nota.</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="width:16%">Atalho</th>
+        <th style="width:24%">Comando tmux</th>
+        <th style="width:34%">Para que serve</th>
+        <th style="width:26%">Nota</th>
+      </tr>
+    </thead>
+    <tbody>
+
+<tr>
+  <td><code>Ctrl+a</code><div class="small" style="margin-top:4px">Prefix</div></td>
+  <td><code>set -g prefix C-a</code><br><code>unbind C-b</code></td>
+  <td>Troca o prefixo padrão do tmux (Ctrl+b) para Ctrl+a.</td>
+  <td><code>Ctrl+a c</code> (nova window)</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a, Ctrl+a</code><div class="small" style="margin-top:4px">Prefix</div></td>
+  <td><code>bind ^A select-pane -t :.+</code></td>
+  <td>Apertando o prefixo duas vezes seguidas, cicla rapidamente para o próximo pane.</td>
+  <td>Clássico "quick pane cycling" do tmux.</td>
+</tr>
+
+<tr>
+  <td><code>(config)</code><div class="small" style="margin-top:4px">Indexação</div></td>
+  <td><code>base-index 1</code><br><code>pane-base-index 1</code></td>
+  <td>Windows e panes começam a contar do 1, não do 0.</td>
+  <td>Alinha os números com o teclado (tecla 1 = window 1).</td>
+</tr>
+
+<tr>
+  <td><code>(config)</code><div class="small" style="margin-top:4px">Indexação</div></td>
+  <td><code>renumber-windows on</code></td>
+  <td>Renumera as windows automaticamente ao fechar uma delas.</td>
+  <td>Evita "buracos" na numeração (ex.: 1,3,4 → 1,2,3).</td>
+</tr>
+
+<tr>
+  <td><code>(config)</code><div class="small" style="margin-top:4px">Comportamento</div></td>
+  <td><code>allow-rename off</code></td>
+  <td>Impede que o shell sobrescreva o nome que você deu à window.</td>
+  <td>Útil quando você renomeia janelas manualmente.</td>
+</tr>
+
+<tr>
+  <td><code>(config)</code><div class="small" style="margin-top:4px">Comportamento</div></td>
+  <td><code>mouse on</code></td>
+  <td>Habilita clique, scroll e resize de pane com o mouse.</td>
+  <td>Funciona na status bar, bordas de pane e histórico.</td>
+</tr>
+
+<tr>
+  <td><code>(config)</code><div class="small" style="margin-top:4px">Performance</div></td>
+  <td><code>escape-time 0</code></td>
+  <td>Remove o atraso ao apertar Esc/prefixo, deixando os atalhos mais responsivos.</td>
+  <td>Bom para quem usa vim/neovim dentro do tmux.</td>
+</tr>
+
+<tr>
+  <td><code>(config)</code><div class="small" style="margin-top:4px">Performance</div></td>
+  <td><code>extended-keys on</code><br><code>terminal-features 'xterm*:extkeys'</code></td>
+  <td>Habilita sequências de teclas estendidas (tmux 3.2+).</td>
+  <td>Necessário para combinações como Ctrl+Alt+Seta funcionarem direito.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+Alt+←</code> / <code>Ctrl+Alt+→</code><div class="small" style="margin-top:4px">Janelas</div></td>
+  <td><code>previous-window</code> / <code>next-window</code></td>
+  <td>Navega entre windows sem precisar do prefixo.</td>
+  <td>Bind com <code>-n</code> (sem prefixo).</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+←↑→↓</code><div class="small" style="margin-top:4px">Panes</div></td>
+  <td><code>select-pane -L/-R/-U/-D</code></td>
+  <td>Navega entre panes sem precisar do prefixo.</td>
+  <td>Bind com <code>-n</code> (sem prefixo).</td>
+</tr>
+
+<tr>
+  <td><code>Alt+←</code> / <code>Alt+→</code><div class="small" style="margin-top:4px">Split</div></td>
+  <td><code>split-window -h</code></td>
+  <td>Cria split vertical (lado a lado) sem precisar do prefixo.</td>
+  <td>← e → fazem a mesma coisa hoje (ver nota técnica).</td>
+</tr>
+
+<tr>
+  <td><code>Alt+↑</code> / <code>Alt+↓</code><div class="small" style="margin-top:4px">Split</div></td>
+  <td><code>split-window -v</code></td>
+  <td>Cria split horizontal (empilhado) sem precisar do prefixo.</td>
+  <td>↑ e ↓ fazem a mesma coisa hoje (ver nota técnica).</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a ←/→</code><div class="small" style="margin-top:4px">Split</div></td>
+  <td><code>split-window -h</code> (repetível)</td>
+  <td>Mesmo split vertical, mas dentro do prefixo.</td>
+  <td><code>bind -r</code>: dá pra repetir a tecla sem apertar o prefixo de novo.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a ↑/↓</code><div class="small" style="margin-top:4px">Split</div></td>
+  <td><code>split-window -v</code> (repetível)</td>
+  <td>Mesmo split horizontal, mas dentro do prefixo.</td>
+  <td><code>bind -r</code>: repetível dentro do timeout do tmux.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a r</code><div class="small" style="margin-top:4px">Utilidades</div></td>
+  <td><code>source-file ~/.tmux.conf</code></td>
+  <td>Recarrega a configuração do tmux sem sair da sessão.</td>
+  <td>Mostra "Config reloaded" na status bar.</td>
+</tr>
+
+<tr>
+  <td><code>Alt+i</code><div class="small" style="margin-top:4px">Sincronização</div></td>
+  <td><code>setw synchronize-panes</code></td>
+  <td>Liga/desliga digitar em todos os panes da window ao mesmo tempo.</td>
+  <td>Sem prefixo. Cuidado: digita em todo mundo até desligar.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a s</code><div class="small" style="margin-top:4px">Busca</div></td>
+  <td><code>(shell) popup com fzf</code></td>
+  <td>Abre um popup com fzf para escolher e pular direto para uma window.</td>
+  <td>Filtra por índice ou nome da window.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a Alt+1</code><div class="small" style="margin-top:4px">Layout</div></td>
+  <td><code>select-layout even-horizontal</code></td>
+  <td>Deixa todos os panes com a mesma largura (lado a lado).</td>
+  <td>Bind padrão do tmux (não precisou ser customizado).</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a Alt+2</code><div class="small" style="margin-top:4px">Layout</div></td>
+  <td><code>select-layout even-vertical</code></td>
+  <td>Deixa todos os panes com a mesma altura (empilhados).</td>
+  <td>Bind padrão do tmux.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a Alt+5</code><div class="small" style="margin-top:4px">Layout</div></td>
+  <td><code>select-layout tiled</code></td>
+  <td>Organiza todos os panes em grade, com largura E altura uniformes entre eles.</td>
+  <td>Melhor opção quando você quer "todos do mesmo tamanho" nas duas direções.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a Espaço</code><div class="small" style="margin-top:4px">Layout</div></td>
+  <td><code>next-layout</code></td>
+  <td>Alterna entre os layouts pré-definidos (even-h, even-v, main-h, main-v, tiled).</td>
+  <td>Bind padrão do tmux.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a c</code><div class="small" style="margin-top:4px">Janelas</div></td>
+  <td><code>new-window</code></td>
+  <td>Cria uma nova window.</td>
+  <td>Bind padrão do tmux (usa o seu prefixo Ctrl+a).</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a x</code><div class="small" style="margin-top:4px">Painéis</div></td>
+  <td><code>kill-pane</code></td>
+  <td>Fecha o pane atual.</td>
+  <td>Pede confirmação (y/n) antes de fechar.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a &amp;</code><div class="small" style="margin-top:4px">Janelas</div></td>
+  <td><code>kill-window</code></td>
+  <td>Fecha a window atual (e todos os panes dela).</td>
+  <td>Pede confirmação (y/n) antes de fechar.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a ,</code><div class="small" style="margin-top:4px">Janelas</div></td>
+  <td><code>rename-window</code></td>
+  <td>Renomeia a window atual.</td>
+  <td>Some com <code>allow-rename off</code>: o nome fica fixo depois.</td>
+</tr>
+
+<tr>
+  <td><code>Ctrl+a :</code><div class="small" style="margin-top:4px">Painéis</div></td>
+  <td><code>select-pane -T "nome"</code></td>
+  <td>Define um título para o pane atual (equivalente a "renomear" o pane).</td>
+  <td>Não é uma tecla única — abre a command-line do tmux (ver nota técnica).</td>
+</tr>
+
+    </tbody>
+  </table>
+  <div class="footer">
+    <div class="small">Legenda: "sem prefixo" = <code>bind -n</code>, funciona direto sem apertar Ctrl+a antes.</div>
+    <div class="small">Página 2</div>
+  </div>
+</div>
+<div class="pagebreak"></div>
+
+
+
+<div class="page">
+  <h2>Detalhes por categoria (com dicas)</h2>
+  <p>Aqui você encontra explicações rápidas, quando usar e exemplos típicos por grupo.</p>
+
+<h3>Prefix</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Prefix</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a</code></h2>
+      <div class="small">Config: <code>set -g prefix C-a</code> / <code>unbind C-b</code> / <code>bind C-a send-prefix</code></div>
+    </div>
+  </div>
+  <p>Troca o prefixo padrão do tmux (Ctrl+b) para Ctrl+a — mais perto do "Home" do teclado e não conflita com o Ctrl+b do Vim.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a c</code> → nova window</li><li><code>Ctrl+a "</code> → split padrão do tmux</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Prefix</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a, Ctrl+a</code></h2>
+      <div class="small">Config: <code>unbind ^A</code> / <code>bind ^A select-pane -t :.+</code></div>
+    </div>
+  </div>
+  <p>Apertar o prefixo duas vezes seguidas cicla para o próximo pane da window — jeito rápido de alternar entre panes sem usar as setas.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a Ctrl+a</code> → vai para o próximo pane</li></ul>
+</div>
+
+</div>
+
+<h3>Indexação</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Indexação</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px">Base-index em 1</h2>
+      <div class="small">Config: <code>set -g base-index 1</code> / <code>set -g pane-base-index 1</code></div>
+    </div>
+  </div>
+  <p>Windows e panes começam a contar do 1, não do 0 — combina com a ordem física das teclas numéricas.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a 1</code> → vai para a primeira window</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Indexação</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px">Renumeração automática</h2>
+      <div class="small">Config: <code>set -g renumber-windows on</code></div>
+    </div>
+  </div>
+  <p>Ao fechar uma window no meio da lista, as demais são renumeradas sequencialmente, sem deixar buracos.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li>Fechar a window 2 de [1,2,3] vira [1,2] automaticamente.</li></ul>
+</div>
+
+</div>
+
+<h3>Comportamento</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Comportamento</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px">Nome fixo da window</h2>
+      <div class="small">Config: <code>set -g allow-rename off</code></div>
+    </div>
+  </div>
+  <p>Impede que o shell (ex.: ao rodar um comando) sobrescreva automaticamente o nome que você deu à window.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li>Renomear com <code>Ctrl+a ,</code> e o nome permanece mesmo rodando outros comandos.</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Comportamento</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px">Mouse habilitado</h2>
+      <div class="small">Config: <code>set -g mouse on</code></div>
+    </div>
+  </div>
+  <p>Habilita clique para trocar de pane/window, scroll no histórico e redimensionar panes arrastando a borda.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li>Arrastar a borda entre dois panes para redimensionar.</li><li>Clicar numa aba da status bar para trocar de window.</li></ul>
+</div>
+
+</div>
+
+<h3>Performance &amp; Compatibilidade</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Performance</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px">Sem delay do prefixo</h2>
+      <div class="small">Config: <code>set -s escape-time 0</code></div>
+    </div>
+  </div>
+  <p>Remove o pequeno atraso padrão do tmux ao interpretar Esc/Alt, deixando prefixo e atalhos mais responsivos.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li>Importante para quem usa Vim/Neovim dentro do tmux (evita delay ao sair do modo insert).</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Performance</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px">Teclas estendidas</h2>
+      <div class="small">Config: <code>set -s extended-keys on</code> / <code>set -as terminal-features 'xterm*:extkeys'</code></div>
+    </div>
+  </div>
+  <p>Habilita sequências de teclas estendidas do tmux 3.2+, necessárias para combinações como Ctrl+Alt+Seta chegarem corretamente ao tmux.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li>Sem isso, <code>Ctrl+Alt+←</code>/<code>→</code> podem não funcionar em alguns terminais.</li></ul>
+</div>
+
+</div>
+
+<h3>Navegação — Janelas</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Janelas</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+Alt+←</code> / <code>Ctrl+Alt+→</code></h2>
+      <div class="small">Config: <code>bind -n C-M-Left previous-window</code> / <code>bind -n C-M-Right next-window</code></div>
+    </div>
+  </div>
+  <p>Navega para a window anterior/próxima sem precisar apertar o prefixo antes.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+Alt+→</code> → próxima window</li><li><code>Ctrl+Alt+←</code> → window anterior</li></ul>
+</div>
+
+</div>
+
+<h3>Navegação — Panes</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Panes</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+←↑→↓</code></h2>
+      <div class="small">Config: <code>bind -n C-Left/C-Right/C-Up/C-Down select-pane -L/-R/-U/-D</code></div>
+    </div>
+  </div>
+  <p>Move o foco entre panes na direção da seta, sem precisar do prefixo.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+→</code> → pane à direita</li><li><code>Ctrl+↑</code> → pane acima</li></ul>
+</div>
+
+</div>
+
+<h3>Split</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Split</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Alt+←</code> / <code>Alt+→</code></h2>
+      <div class="small">Config: <code>bind -n M-Left split-window -h</code> / <code>bind -n M-Right split-window -h</code></div>
+    </div>
+  </div>
+  <p>Cria um split vertical (panes lado a lado) sem precisar do prefixo.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Alt+→</code> → novo split vertical</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Split</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Alt+↑</code> / <code>Alt+↓</code></h2>
+      <div class="small">Config: <code>bind -n M-Up split-window -v</code> / <code>bind -n M-Down split-window -v</code></div>
+    </div>
+  </div>
+  <p>Cria um split horizontal (panes empilhados) sem precisar do prefixo.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Alt+↓</code> → novo split horizontal</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Split</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a ←</code> / <code>Ctrl+a →</code></h2>
+      <div class="small">Config: <code>bind -r Left split-window -h</code> / <code>bind -r Right split-window -h</code></div>
+    </div>
+  </div>
+  <p>Mesmo split vertical, dentro do prefixo. Como usa <code>bind -r</code>, dá pra repetir a tecla algumas vezes sem apertar o prefixo de novo.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a →</code> → split vertical</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Split</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a ↑</code> / <code>Ctrl+a ↓</code></h2>
+      <div class="small">Config: <code>bind -r Up split-window -v</code> / <code>bind -r Down split-window -v</code></div>
+    </div>
+  </div>
+  <p>Mesmo split horizontal, dentro do prefixo, com repetição via <code>bind -r</code>.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a ↓</code> → split horizontal</li></ul>
+</div>
+
+</div>
+
+<h3>Layout de Painéis</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Layout</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a Alt+1</code> / <code>Ctrl+a Alt+2</code></h2>
+      <div class="small">Comando: <code>select-layout even-horizontal</code> / <code>select-layout even-vertical</code></div>
+    </div>
+  </div>
+  <p><code>Alt+1</code> deixa os panes com a mesma largura (lado a lado). <code>Alt+2</code> deixa com a mesma altura (empilhados).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a Alt+1</code> → 3 panes lado a lado, mesma largura</li><li><code>Ctrl+a Alt+2</code> → 3 panes empilhados, mesma altura</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Layout</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a Alt+5</code></h2>
+      <div class="small">Comando: <code>select-layout tiled</code></div>
+    </div>
+  </div>
+  <p>Organiza todos os panes em grade, com largura <b>e</b> altura uniformes entre eles — a opção certa quando você quer todos do mesmo tamanho nas duas direções.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li>4 panes → grade 2x2, todos do mesmo tamanho.</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Layout</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a Espaço</code></h2>
+      <div class="small">Comando: <code>next-layout</code></div>
+    </div>
+  </div>
+  <p>Alterna ciclicamente entre os 5 layouts pré-definidos do tmux, sem precisar lembrar o número de cada um.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a Espaço</code> várias vezes → percorre even-h, even-v, main-h, main-v, tiled.</li></ul>
+</div>
+
+</div>
+
+<h3>Janelas — Criar, Fechar &amp; Renomear</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Janelas</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a c</code></h2>
+      <div class="small">Comando: <code>new-window</code></div>
+    </div>
+  </div>
+  <p>Cria uma nova window (aba) na sessão atual. Bind padrão do tmux — só muda porque seu prefixo é Ctrl+a.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a c</code> → nova window vazia</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Janelas</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a &amp;</code></h2>
+      <div class="small">Comando: <code>kill-window</code></div>
+    </div>
+  </div>
+  <p>Fecha a window atual, junto com todos os panes dentro dela.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a &amp;</code> → pede confirmação → <code>y</code> fecha</li></ul>
+  <div class="callout warn" style="margin-top:8px;padding:8px 10px">
+    <div class="small">Fecha todos os panes da window de uma vez — confirme antes de aceitar.</div>
+  </div>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Janelas</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a ,</code></h2>
+      <div class="small">Comando: <code>rename-window</code></div>
+    </div>
+  </div>
+  <p>Abre um prompt para renomear a window atual. Como <code>allow-rename off</code> está ativo, o nome não é sobrescrito depois pelo shell.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a ,</code> → apaga o nome antigo → digita o novo → Enter</li></ul>
+</div>
+
+</div>
+
+<h3>Painéis — Fechar &amp; Renomear</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Painéis</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a x</code></h2>
+      <div class="small">Comando: <code>kill-pane</code></div>
+    </div>
+  </div>
+  <p>Fecha só o pane atual (os outros panes da window continuam abertos).</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a x</code> → pede confirmação → <code>y</code> fecha</li></ul>
+</div>
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Painéis</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a :</code></h2>
+      <div class="small">Comando: <code>select-pane -T "nome"</code></div>
+    </div>
+  </div>
+  <p>Tmux não tem uma tecla própria para "renomear pane" como tem para window — o jeito é definir um título via command-line.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a :</code> → digite <code>select-pane -T "build"</code> → Enter</li></ul>
+  <div class="callout warn" style="margin-top:8px;padding:8px 10px">
+    <div class="small">O título só aparece na tela se <code>pane-border-status</code> estiver ativado — hoje seu <code>.tmux.conf</code> não define isso (ver nota técnica).</div>
+  </div>
+</div>
+
+</div>
+
+<h3>Utilidades</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Utilidades</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a r</code></h2>
+      <div class="small">Config: <code>bind r source-file ~/.tmux.conf \; display-message "Config reloaded"</code></div>
+    </div>
+  </div>
+  <p>Recarrega o <code>~/.tmux.conf</code> na sessão atual, sem precisar matar o servidor tmux ou reabrir a sessão.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li>Edite o <code>.tmux.conf</code>, salve, e dê <code>Ctrl+a r</code>.</li></ul>
+</div>
+
+</div>
+
+<h3>Sincronização</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Sincronização</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Alt+i</code></h2>
+      <div class="small">Config: <code>bind -n M-i setw synchronize-panes</code></div>
+    </div>
+  </div>
+  <p>Liga/desliga o modo sincronizado: tudo que você digita é enviado para todos os panes da window ao mesmo tempo. Sem prefixo.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li>Rodar o mesmo comando em vários servidores/panes ao mesmo tempo.</li></ul>
+  <div class="callout warn" style="margin-top:8px;padding:8px 10px">
+    <div class="small">Não esqueça de desligar (<code>Alt+i</code> de novo) depois — senão você continua digitando em todos os panes.</div>
+  </div>
+</div>
+
+</div>
+
+<h3>Busca</h3>
+<div class="grid">
+
+<div class="card" style="padding:12px 14px">
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div>
+      <div class="badge">Busca</div>
+      <h2 style="margin:8px 0 6px 0;font-size:16px"><code>Ctrl+a s</code></h2>
+      <div class="small">Config: <code>bind-key s display-popup -E "zsh -lc '...'"</code></div>
+    </div>
+  </div>
+  <p>Abre um popup com <code>fzf</code> listando todas as windows (índice + nome); ao escolher uma, pula direto para ela.</p>
+  <div class="small" style="margin-top:6px;color:var(--text)">Exemplos:</div>
+  <ul><li><code>Ctrl+a s</code> → digite parte do nome da window → Enter</li></ul>
+  <div class="callout warn" style="margin-top:8px;padding:8px 10px">
+    <div class="small">Requer <code>fzf</code> instalado e <code>zsh</code> disponível no PATH.</div>
+  </div>
+</div>
+
+</div>
+
+  <div class="footer">
+    <div class="small">Dica: prefira os atalhos "sem prefixo" (Ctrl/Alt+setas) para navegação rápida no dia a dia.</div>
+    <div class="small">Página 3</div>
+  </div>
+</div>
+<div class="pagebreak"></div>
+
+
+
+<div class="page">
+  <h2>Fluxos práticos (receitas rápidas)</h2>
+  <p>Combinações comuns dos seus atalhos para tarefas reais do dia a dia.</p>
+
+  <div class="grid3">
+    <div class="callout good">
+      <div class="title">Alternar entre panes rapidamente</div>
+      <div class="small">Sem tirar a mão do teclado:</div>
+      <pre><code>Ctrl+a Ctrl+a</code></pre>
+      <div class="small">Ou navegando por direção:</div>
+      <pre><code>Ctrl+← / Ctrl+→ / Ctrl+↑ / Ctrl+↓</code></pre>
+    </div>
+
+    <div class="callout">
+      <div class="title">Criar um split rápido</div>
+      <div class="small">Sem prefixo, direto:</div>
+      <pre><code>Alt+→   # split vertical
+Alt+↓   # split horizontal</code></pre>
+      <div class="small">Ou com o prefixo (repetível):</div>
+      <pre><code>Ctrl+a →
+Ctrl+a ↓</code></pre>
+    </div>
+
+    <div class="callout">
+      <div class="title">Pular para uma window pelo nome</div>
+      <div class="small">Abre popup fzf:</div>
+      <pre><code>Ctrl+a s</code></pre>
+      <div class="small">Digite parte do nome/índice e dê Enter.</div>
+    </div>
+  </div>
+
+  <div style="height:10px"></div>
+
+  <div class="grid">
+    <div class="callout">
+      <div class="title">Rodar o mesmo comando em vários panes</div>
+      <div class="small">Ativar sincronização:</div>
+      <pre><code>Alt+i</code></pre>
+      <div class="small">Digite o comando normalmente (vai para todos os panes) e depois desligue:</div>
+      <pre><code>Alt+i</code></pre>
+    </div>
+
+    <div class="callout good">
+      <div class="title">Editar e recarregar a config</div>
+      <div class="small">Fluxo típico:</div>
+      <pre><code>vim ~/.tmux.conf
+# ...editar e salvar...
+Ctrl+a r</code></pre>
+      <div class="small">A status bar mostra "Config reloaded" confirmando.</div>
+    </div>
+  </div>
+
+  <div style="height:10px"></div>
+
+  <div class="callout good">
+    <div class="title">Navegar por windows sem prefixo</div>
+    <div class="small">Ideal quando você tem várias windows abertas (ex.: um projeto por window).</div>
+    <pre><code>Ctrl+Alt+→   # próxima window
+Ctrl+Alt+←   # window anterior</code></pre>
+    <div class="small">Combine com <code>Ctrl+a s</code> quando quiser pular direto para uma window específica em vez de ciclar uma a uma.</div>
+  </div>
+
+  <div style="height:10px"></div>
+
+  <div class="grid3">
+    <div class="callout good">
+      <div class="title">Deixar os panes do mesmo tamanho</div>
+      <div class="small">Mesma largura (lado a lado):</div>
+      <pre><code>Ctrl+a Alt+1</code></pre>
+      <div class="small">Mesma altura (empilhados):</div>
+      <pre><code>Ctrl+a Alt+2</code></pre>
+      <div class="small">Largura e altura uniformes (grade):</div>
+      <pre><code>Ctrl+a Alt+5</code></pre>
+    </div>
+
+    <div class="callout">
+      <div class="title">Fechar pane/window</div>
+      <div class="small">Só o pane atual:</div>
+      <pre><code>Ctrl+a x</code></pre>
+      <div class="small">A window inteira (todos os panes):</div>
+      <pre><code>Ctrl+a &amp;</code></pre>
+      <div class="small">Ambos pedem confirmação (y/n).</div>
+    </div>
+
+    <div class="callout">
+      <div class="title">Renomear window/pane</div>
+      <div class="small">Window (aparece na status bar):</div>
+      <pre><code>Ctrl+a ,</code></pre>
+      <div class="small">Pane (precisa de pane-border-status):</div>
+      <pre><code>Ctrl+a :
+select-pane -T "nome"</code></pre>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="small">Sugestão: combine navegação sem prefixo (Ctrl/Alt+setas) com o prefixo para ações que mudam o layout (splits, reload).</div>
+    <div class="small">Página 4</div>
+  </div>
+</div>
+<div class="pagebreak"></div>
+
+
+
+<div class="page">
+  <h2>Notas técnicas (o que os binds mais complexos realmente fazem)</h2>
+  <p>Detalhes sobre os pontos menos óbvios da sua config, incluindo o popup com fzf.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Ctrl+a s — popup fzf</h3>
+      <p><b>Objetivo:</b> escolher e pular para uma window via busca fuzzy, sem precisar decorar índices.</p>
+      <div class="small">Como funciona (alto nível):</div>
+      <pre><code>display-popup -E "zsh -lc '
+tmux list-windows -F "#{window_index}:#{window_name}"
+| fzf --reverse --border --prompt="Window > "
+| cut -d: -f1
+| xargs -I {} tmux select-window -t {}'"</code></pre>
+      <ul>
+        <li><code>tmux list-windows</code> lista todas as windows como <code>índice:nome</code>.</li>
+        <li><code>fzf</code> abre um filtro interativo dentro do popup (<code>-E</code> = fecha o popup ao sair).</li>
+        <li><code>cut -d: -f1</code> pega só o índice escolhido.</li>
+        <li><code>xargs ... tmux select-window -t {}</code> troca para a window escolhida.</li>
+      </ul>
+      <div class="callout warn" style="margin-top:10px">
+        <div class="title">Dependências</div>
+        <div class="small">Precisa de <code>fzf</code> instalado e <code>zsh</code> no PATH. Sem eles, o popup abre e fecha sem fazer nada.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Quick pane cycling (Ctrl+a, Ctrl+a)</h3>
+      <p><b>Objetivo:</b> alternar rapidamente entre panes, técnica clássica documentada no wiki do tmux.</p>
+      <pre><code>unbind ^A
+bind ^A select-pane -t :.+</code></pre>
+      <ul>
+        <li>Como o prefixo é <code>C-a</code>, rebindar <code>^A</code> dentro da tabela de prefixo faz o "duplo Ctrl+a" funcionar.</li>
+        <li><code>select-pane -t :.+</code> seleciona o próximo pane na ordem (cíclico).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Alt/Ctrl+Setas e terminais</h3>
+      <p><b>Objetivo:</b> fazer combinações tipo <code>Ctrl+Alt+Seta</code> e <code>Alt+Seta</code> chegarem corretamente ao tmux.</p>
+      <ul>
+        <li><code>extended-keys on</code> + <code>terminal-features 'xterm*:extkeys'</code> habilitam essas sequências (tmux 3.2+).</li>
+        <li>Terminais modernos (iTerm2, Kitty, WezTerm, Alacritty, Windows Terminal) costumam suportar isso nativamente.</li>
+        <li>O Terminal.app do macOS às vezes precisa configurar "Option as Meta key" para o Alt funcionar como esperado.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Redundância nos splits por Alt+Seta</h3>
+      <p><b>Observação:</b> <code>Alt+←</code> e <code>Alt+→</code> fazem exatamente a mesma coisa (<code>split-window -h</code>), e o mesmo vale para <code>Alt+↑</code>/<code>Alt+↓</code> (<code>split-window -v</code>).</p>
+      <ul>
+        <li>Não há diferenciação de lado/posição do novo pane — qualquer seta horizontal cria split vertical, qualquer seta vertical cria split horizontal.</li>
+        <li>Isso é útil se você só quer decorar "seta horizontal = lado a lado, seta vertical = empilhado", sem se preocupar com a direção exata.</li>
+      </ul>
+      <div class="callout warn" style="margin-top:10px">
+        <div class="title">Se quiser diferenciar</div>
+        <div class="small">Dá pra usar <code>split-window -h -b</code> (before) em uma das setas para o novo pane aparecer à esquerda em vez de à direita, por exemplo.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Renomear pane (select-pane -T)</h3>
+      <p><b>Objetivo:</b> dar um "nome" a um pane, algo que o tmux não tem como tecla única por padrão (só windows têm <code>rename-window</code>).</p>
+      <pre><code>Ctrl+a :
+select-pane -T "nome"</code></pre>
+      <ul>
+        <li><code>select-pane -T</code> define um título interno para o pane atual.</li>
+        <li>Esse título só fica visível na tela se você ligar <code>pane-border-status</code> (ex.: <code>set -g pane-border-status top</code>) — configuração que <b>não está</b> no seu <code>.tmux.conf</code> hoje.</li>
+      </ul>
+      <div class="callout warn" style="margin-top:10px">
+        <div class="title">Sem pane-border-status ativo</div>
+        <div class="small">O comando roda sem erro, mas você não vai ver o título em lugar nenhum. Se quiser realmente visualizar/usar isso no dia a dia, adicione <code>set -g pane-border-status top</code> (ou <code>bottom</code>) ao <code>.tmux.conf</code>.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Layouts pré-definidos do tmux</h3>
+      <p><b>Objetivo:</b> reorganizar o tamanho dos panes sem precisar redimensionar um por um.</p>
+      <ul>
+        <li><code>even-horizontal</code> (Alt+1): panes lado a lado, mesma largura, altura total.</li>
+        <li><code>even-vertical</code> (Alt+2): panes empilhados, mesma altura, largura total.</li>
+        <li><code>main-horizontal</code> (Alt+3) / <code>main-vertical</code> (Alt+4): um pane "principal" maior + os demais menores.</li>
+        <li><code>tiled</code> (Alt+5): grade uniforme — largura e altura iguais para todos.</li>
+      </ul>
+      <div class="small">Todos esses binds já vêm por padrão no tmux (dentro do prefixo); não foram customizados no seu <code>.tmux.conf</code>.</div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:14px">
+    <div class="title">Checklist rápido</div>
+    <ul>
+      <li>Prefixo é <code>Ctrl+a</code>, não <code>Ctrl+b</code>.</li>
+      <li>fzf e zsh precisam estar instalados para o <code>Ctrl+a s</code> funcionar.</li>
+      <li>Depois de editar o <code>.tmux.conf</code>, use <code>Ctrl+a r</code> para recarregar.</li>
+      <li>Lembre de desligar o <code>Alt+i</code> (sync-panes) depois de usar.</li>
+      <li><code>Ctrl+a x</code> e <code>Ctrl+a &amp;</code> pedem confirmação — não fecham nada sem avisar.</li>
+      <li>Para ver o "nome" de um pane, ative <code>pane-border-status</code> no <code>.tmux.conf</code>.</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <div class="small">Fim da cheat sheet — personalize à vontade e mantenha seu ~/.tmux.conf documentado.</div>
+    <div class="small">Página 5</div>
+  </div>
+</div>
+
+
+</body>
+</html>
