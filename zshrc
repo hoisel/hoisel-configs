@@ -268,3 +268,50 @@ ddl-namecoach-eventsdb-prod() {
   --no-privileges \
   > "ddl-eventsdb-prod-${ts}.sql"
 }
+
+############################ WebApps ############################
+ice-clean-cache() {
+  BASE="$HOME/.local/share/ice/profiles"
+
+  echo "Cleaning ICE cache..."
+
+  find "$BASE" -type d -name "Cache" -exec rm -rf {} + 2>/dev/null
+  find "$BASE" -type d -name "Code Cache" -exec rm -rf {} + 2>/dev/null
+  find "$BASE" -type d -name "GPUCache" -exec rm -rf {} + 2>/dev/null
+  find "$BASE" -type d -name "CacheStorage" -exec rm -rf {} + 2>/dev/null
+
+  echo "Done."
+}
+
+ice-size() {
+  BASE="$HOME/.local/share/ice/profiles"
+
+  echo "ICE profiles disk usage:"
+  du -h --max-depth=1 "$BASE" 2>/dev/null | sort -h
+
+  echo
+  echo "Total:"
+  du -sh "$BASE"
+}
+
+# Forces Ulauncher to rebuild its app index (fixes stale name/icon after
+# editing a .desktop file - restarting Cinnamon alone does NOT fix this,
+# Ulauncher keeps its own separate cache)
+ulauncher-refresh() {
+  echo "Stopping Ulauncher..."
+  systemctl --user stop ulauncher.service 2>/dev/null
+  pkill -9 -f "ulauncher --hide-window" 2>/dev/null
+  sleep 1
+
+  echo "Clearing app cache..."
+  rm -f ~/.cache/ulauncher_cache/app_cache.db ~/.cache/ulauncher_cache/desktop_dirs.db
+
+  echo "Starting Ulauncher..."
+  systemctl --user reset-failed ulauncher.service 2>/dev/null
+  systemctl --user start ulauncher.service
+
+  sleep 2
+  systemctl --user is-active --quiet ulauncher.service && echo "Done, Ulauncher is running." || echo "Something went wrong, check: systemctl --user status ulauncher.service"
+}
+
+
