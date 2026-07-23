@@ -419,3 +419,5 @@ alias sync-envs-vcs='sync-envs-and-open-windsurf ~/Dev/Professional/NameCoach/.e
 alias sync-envs-fe='sync-envs-and-open-windsurf ~/Dev/Professional/NameCoach/.envs/namecoach-fe'
 
 
+# Added by Antigravity CLI installer
+export PATH="/home/hoisel/.local/bin:$PATH"
