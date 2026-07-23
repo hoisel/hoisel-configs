@@ -1,6 +1,6 @@
 [user]
-    name = hoisel
-    email = danielhoiselferraz@gmail.com
+	name = hoisel
+	email = danielhoiselferraz@gmail.com
 [core]
     editor = windsurf --wait
     autocrlf = input
@@ -10,7 +10,7 @@
     cmd = "windsurf --wait --diff "
 [alias]
     ce = config --global --edit
-    stash-staged = "stash push --staged -m \"staged\""
+    stash-staged = stash push --staged
     cb = checkout -b
     co = checkout
     bb = switch -b
