@@ -1,0 +1,29 @@
+{
+  "name": "Cocoa",
+  "base": "dark",
+  "overrides": {
+    "composerSidebarBackground": "rgb(20,17,15)",
+    "userMessageBackground": "rgb(42,35,32)",
+    "userMessageBackgroundHover": "rgb(58,47,41)",
+    "selectionBg": "rgb(58,47,41)",
+    "bashMessageBackgroundColor": "rgb(30,25,21)",
+    "memoryBackgroundColor": "rgb(30,25,21)",
+    "promptBorder": "rgb(179,156,134)",
+    "promptBorderShimmer": "rgb(242,232,220)",
+    "permission": "rgb(255,217,160)",
+    "permissionShimmer": "rgb(242,232,220)",
+    "suggestion": "rgb(255,217,160)",
+    "text": "rgb(242,232,220)",
+    "subtle": "rgb(179,156,134)",
+    "inactive": "rgb(134,107,85)",
+    "success": "rgb(168,213,162)",
+    "error": "rgb(242,139,130)",
+    "bashBorder": "rgb(200,135,90)",
+    "diffAdded": "rgb(42,63,46)",
+    "diffAddedDimmed": "rgb(34,44,36)",
+    "diffAddedWord": "rgb(66,99,72)",
+    "diffRemoved": "rgb(74,42,46)",
+    "diffRemovedDimmed": "rgb(52,34,36)",
+    "diffRemovedWord": "rgb(115,62,68)"
+  }
+}

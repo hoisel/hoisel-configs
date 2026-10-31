@@ -16,8 +16,7 @@ The [`mood`](../bin/mood) command switches all three at once.
 |---|---|---|---|---|---|
 | `rose-pine` | `#191724` | `#9983b6` | "Rose Pine" | `rose-pine` (slab) | `Rosé Pine.conf` (upstream Rosé Pine) |
 | `sunset` | `#181119` | `#bd674e` | "Sunset" | `sunset` (slab) | `Sunset.conf` |
-
-`glowup-packs/my-cozy.json` is a pack without a matching theme, so `mood` doesn't list it; use it with `/glowup pack my-cozy`.
+| `cocoa` | `#14110f` | `#f4a6b8` | "Cocoa" | `cocoa` (slab, dithered pane field) | `Cocoa.conf` |
 
 ## Install on a new machine
 
