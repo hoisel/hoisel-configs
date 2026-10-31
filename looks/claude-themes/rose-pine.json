@@ -1,0 +1,20 @@
+{
+  "name": "Rose Pine",
+  "base": "dark-daltonized",
+  "overrides": {
+    "composerSidebarBackground": "rgb(25,23,36)",
+    "userMessageBackground": "rgb(42,20,80)",
+    "userMessageBackgroundHover": "rgb(58,29,107)",
+    "selectionBg": "rgb(58,29,107)",
+    "bashMessageBackgroundColor": "rgb(32,14,62)",
+    "memoryBackgroundColor": "rgb(32,14,62)",
+    "promptBorder": "rgb(155,134,201)",
+    "promptBorderShimmer": "rgb(240,230,255)",
+    "permission": "rgb(179,136,255)",
+    "permissionShimmer": "rgb(210,190,255)",
+    "suggestion": "rgb(179,136,255)",
+    "text": "rgb(240,230,255)",
+    "subtle": "rgb(155,134,201)",
+    "inactive": "rgb(155,134,201)"
+  }
+}

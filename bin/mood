@@ -1,0 +1,321 @@
+#!/usr/bin/env python3
+"""mood: switch a matched "look" across Claude Code, glowup and kitty at once.
+
+A look is named after a Claude Code custom theme (~/.claude/themes/<slug>.json).
+Applying it sets three things that share that slug:
+  - the Claude Code theme   -> settings.json "theme": "custom:<slug>"
+  - the glowup pack         -> settings.json glowup plugin option "pack": "<slug>"
+  - the kitty theme         -> the ~/.config/kitty/*.conf whose "## name:" matches
+                               the Claude Code theme's name, copied to current-theme.conf
+
+Source and docs: hoisel-configs/bin/mood and hoisel-configs/looks/README.md
+"""
+import json
+import os
+import shutil
+import signal
+import subprocess
+import sys
+import unicodedata
+from pathlib import Path
+
+HOME = Path.home()
+CLAUDE_DIR = Path(os.environ.get("CLAUDE_CONFIG_DIR", HOME / ".claude"))
+THEMES_DIR = CLAUDE_DIR / "themes"
+SETTINGS = CLAUDE_DIR / "settings.json"
+PACKS_DIR = CLAUDE_DIR / "glowup" / "packs"
+GLOWUP_STORE = next((CLAUDE_DIR / "plugins" / "store").glob("glowup_glowup-*.json"), None)
+KITTY_DIR = Path(os.environ.get("XDG_CONFIG_HOME", HOME / ".config")) / "kitty"
+KITTY_CURRENT = KITTY_DIR / "current-theme.conf"
+GLOWUP_PLUGIN = "glowup@glowup"
+
+COLOR = sys.stdout.isatty() and "NO_COLOR" not in os.environ
+
+
+def sgr(code, text):
+    return f"\033[{code}m{text}\033[0m" if COLOR else text
+
+
+def bold(t): return sgr("1", t)
+def dim(t): return sgr("2", t)
+def green(t): return sgr("32", t)
+def red(t): return sgr("31", t)
+def yellow(t): return sgr("33", t)
+def cyan(t): return sgr("36", t)
+def magenta(t): return sgr("35", t)
+
+
+def rgb(hexcolor):
+    h = hexcolor.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def css_to_hex(value):
+    """Claude Code theme colors are rgb(r,g,b) or #rrggbb."""
+    v = value.strip()
+    if v.startswith("rgb("):
+        parts = [int(p) for p in v[4:-1].split(",")]
+        return "#" + "".join(f"{p:02x}" for p in parts)
+    return v if v.startswith("#") and len(v) == 7 else None
+
+
+def swatch(hexcolor, width=4):
+    if not hexcolor:
+        return " " * width
+    if not COLOR:
+        return hexcolor + " "
+    r, g, b = rgb(hexcolor)
+    return f"\033[48;2;{r};{g};{b}m{' ' * width}\033[0m"
+
+
+def norm(name):
+    s = unicodedata.normalize("NFKD", name)
+    return "".join(c for c in s if not unicodedata.combining(c)).lower().strip()
+
+
+def read_json(path, default=None):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return default
+
+
+def kitty_themes():
+    """Map normalized '## name:' -> path for every kitty theme file."""
+    found = {}
+    for f in sorted(KITTY_DIR.glob("*.conf")):
+        if f.name in ("kitty.conf", "current-theme.conf"):
+            continue
+        for line in f.read_text(encoding="utf-8", errors="replace").splitlines()[:10]:
+            if line.startswith("## name:"):
+                found[norm(line.split(":", 1)[1])] = f
+                break
+    return found
+
+
+def kitty_value(path, key):
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        parts = line.split()
+        if len(parts) >= 2 and parts[0] == key:
+            return parts[1]
+    return None
+
+
+def kitty_current_name():
+    if not KITTY_CURRENT.exists():
+        return None
+    for line in KITTY_CURRENT.read_text(encoding="utf-8", errors="replace").splitlines()[:10]:
+        if line.startswith("## name:"):
+            return line.split(":", 1)[1].strip()
+    return None
+
+
+def looks():
+    """Every Claude Code custom theme, with what it pairs with."""
+    kitty = kitty_themes()
+    out = []
+    for f in sorted(THEMES_DIR.glob("*.json")):
+        data = read_json(f, {}) or {}
+        slug = f.stem
+        name = data.get("name", slug)
+        overrides = data.get("overrides", {}) or {}
+        pack = PACKS_DIR / f"{slug}.json"
+        pack_data = read_json(pack, {}) if pack.exists() else None
+        out.append({
+            "slug": slug,
+            "name": name,
+            "base": data.get("base", "dark"),
+            "pane": css_to_hex(overrides.get("composerSidebarBackground", "")),
+            "pack": pack if pack.exists() else None,
+            "pack_bg": ((pack_data or {}).get("colors") or {}).get("bg") if isinstance((pack_data or {}).get("colors"), dict) else None,
+            "pack_accent": (((pack_data or {}).get("colors") or {}).get("palette") or {}).get("accent") if isinstance((pack_data or {}).get("colors"), dict) else None,
+            "kitty": kitty.get(norm(name)),
+        })
+    return out
+
+
+def active():
+    settings = read_json(SETTINGS, {}) or {}
+    store = read_json(GLOWUP_STORE, {}) if GLOWUP_STORE else {}
+    theme = settings.get("theme", "")
+    return {
+        "theme": theme[len("custom:"):] if theme.startswith("custom:") else theme,
+        "pack": ((store or {}).get("mix") or {}).get("colors"),
+        "kitty": kitty_current_name(),
+    }
+
+
+def mark(ok):
+    return green("✔") if ok else red("✘")
+
+
+def cmd_list():
+    act = active()
+    items = looks()
+    if not items:
+        print(yellow(f"No Claude Code custom themes in {THEMES_DIR}."))
+        print(dim("Create one with /theme → New custom theme… inside Claude Code."))
+        return 1
+    print(bold("Looks") + dim("  (from Claude Code themes in ~/.claude/themes)"))
+    print()
+    for lk in items:
+        live = act["theme"] == lk["slug"]
+        bullet = magenta("●") if live else dim("○")
+        bg = lk["pack_bg"] or (kitty_value(lk["kitty"], "background") if lk["kitty"] else None) or lk["pane"]
+        ready = lk["pack"] is not None and lk["kitty"] is not None
+        title = bold(lk["slug"]) + "  " + dim(f'"{lk["name"]}"')
+        print(f"  {bullet} {swatch(bg)}{swatch(lk['pack_accent'], 2)} {title}" + ("" if ready else "  " + yellow("incomplete")))
+        print(f"      {mark(True)} claude theme  {dim('custom:' + lk['slug'] + '  base ' + lk['base'])}"
+              + (cyan('  active') if live else ""))
+        print(f"      {mark(lk['pack'] is not None)} glowup pack   "
+              + (dim(lk["slug"]) + (cyan("  active") if act["pack"] == lk["slug"] else "")
+                 if lk["pack"] else red(f"missing {PACKS_DIR / (lk['slug'] + '.json')}")))
+        if lk["kitty"]:
+            kname = lk["kitty"].name
+            print(f"      {mark(True)} kitty theme   {dim(kname)}"
+                  + (cyan("  active") if act["kitty"] and norm(act["kitty"]) == norm(lk["name"]) else ""))
+        else:
+            print(f"      {mark(False)} kitty theme   {red('no ' + str(KITTY_DIR) + '/*.conf with ## name: ' + lk['name'])}")
+        print()
+    return 0
+
+
+def cmd_current():
+    act = active()
+    print(bold("Current"))
+    print(f"  claude theme  {cyan(act['theme'] or '?')}")
+    print(f"  glowup pack   {cyan(act['pack'] or '?')}")
+    print(f"  kitty theme   {cyan(act['kitty'] or '?')}")
+    return 0
+
+
+def backup(path):
+    if path.exists():
+        shutil.copy2(path, path.with_name(path.name + ".mood.bak"))
+
+
+def reload_kitty():
+    """kitty re-reads kitty.conf on SIGUSR1; then drop any live OSC 11 override in this window."""
+    try:
+        pids = subprocess.run(["pgrep", "-x", "kitty"], capture_output=True, text=True).stdout.split()
+    except OSError:
+        pids = []
+    for pid in pids:
+        try:
+            os.kill(int(pid), signal.SIGUSR1)
+        except (OSError, ValueError):
+            pass
+    try:
+        with open("/dev/tty", "w") as tty:
+            tty.write("\033]111\033\\")
+    except OSError:
+        pass
+    return len(pids)
+
+
+def cmd_apply(slug):
+    items = {lk["slug"]: lk for lk in looks()}
+    lk = items.get(slug)
+    if lk is None:
+        print(red(f"✘ unknown look: {slug}"), file=sys.stderr)
+        print(f"  available: {', '.join(bold(s) for s in items) or dim('none')}", file=sys.stderr)
+        print(dim("  run `mood list` to see what each one pairs with"), file=sys.stderr)
+        return 2
+    problems = []
+    if lk["pack"] is None:
+        problems.append(f"glowup pack {PACKS_DIR / (slug + '.json')} not found")
+    if lk["kitty"] is None:
+        problems.append(f'no kitty theme in {KITTY_DIR} with "## name: {lk["name"]}"')
+    if problems:
+        print(red(f"✘ look {slug} is incomplete:"), file=sys.stderr)
+        for p in problems:
+            print(f"  - {p}", file=sys.stderr)
+        return 1
+
+    # kitty
+    backup(KITTY_CURRENT)
+    shutil.copyfile(lk["kitty"], KITTY_CURRENT)
+    reloaded = reload_kitty()
+
+    # Claude Code theme + glowup pack. theme "classic" and spinner "pack" clear glowup's
+    # saved overrides, so the pack's own palette and spinner are what shows.
+    settings = read_json(SETTINGS)
+    if not isinstance(settings, dict):
+        print(red(f"✘ could not read {SETTINGS}; kitty was switched, Claude Code was not"), file=sys.stderr)
+        return 1
+    backup(SETTINGS)
+    settings["theme"] = f"custom:{slug}"
+    opts = settings.setdefault("pluginConfigs", {}).setdefault(GLOWUP_PLUGIN, {}).setdefault("options", {})
+    opts["pack"] = slug
+    opts["theme"] = "classic"
+    opts["spinner"] = "pack"
+    tmp = SETTINGS.with_name(SETTINGS.name + ".mood.tmp")
+    tmp.write_text(json.dumps(settings, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    os.replace(tmp, SETTINGS)
+
+    print(green("✔") + " look " + bold(slug) + " " + swatch(lk["pack_bg"]) + swatch(lk["pack_accent"], 2))
+    print(f"  {green('✔')} kitty theme   {lk['kitty'].name}" + dim(f"  (reloaded {reloaded} kitty process{'es' if reloaded != 1 else ''})"))
+    print(f"  {green('✔')} claude theme  custom:{slug}")
+    print(f"  {green('✔')} glowup pack   {slug}")
+    print()
+    print(yellow("→ restart Claude Code to load it:") + " /exit, then " + bold("claude --continue"))
+    print(dim("  Claude Code reads custom theme colors and glowup's /plugin pack only at session start."))
+    return 0
+
+
+def cmd_help():
+    t = bold
+    c = cyan
+    print(f"{t('mood')} {dim('— switch Claude Code, glowup and kitty to one matching look')}")
+    print()
+    print(t("USAGE"))
+    print(f"  {c('mood')} {magenta('<look>')}     apply a look")
+    print(f"  {c('mood list')}       list looks and what each pairs with")
+    print(f"  {c('mood current')}    show what is active now")
+    print(f"  {c('mood help')}       this help")
+    print()
+    print(t("LOOKS"))
+    items = looks()
+    act = active()
+    if not items:
+        print(dim("  none yet — create one with /theme → New custom theme… in Claude Code"))
+    for lk in items:
+        live = act["theme"] == lk["slug"]
+        ready = lk["pack"] is not None and lk["kitty"] is not None
+        state = cyan("active") if live else (green("ready") if ready else yellow("incomplete"))
+        print(f"  {swatch(lk['pack_bg'] or lk['pane'])}{swatch(lk['pack_accent'], 2)} {bold(lk['slug']):<14}  {dim(lk['name']):<22} {state}")
+    print()
+    print(t("WHAT A LOOK SETS"))
+    print(f"  {magenta('claude theme')}  ~/.claude/themes/{magenta('<look>')}.json  → settings.json theme custom:<look>")
+    print(f"  {magenta('glowup pack')}   ~/.claude/glowup/packs/{magenta('<look>')}.json  → glowup /plugin option pack")
+    print(f"  {magenta('kitty theme')}   ~/.config/kitty/*.conf whose \"## name:\" matches the theme name")
+    print(f"                → copied to current-theme.conf, kitty reloaded")
+    print()
+    print(t("ADD A LOOK"))
+    print(f"  1. In Claude Code: {c('/theme')} → New custom theme…  (its file name is the look's name)")
+    print(f"  2. Save a glowup pack with the same name: {c('/glowup pack save <look>')}")
+    print(f"  3. Add a kitty theme with {c('## name: <theme name>')} in ~/.config/kitty/")
+    print()
+    print(t("NOTES"))
+    print(dim("  • Restart Claude Code after switching; it loads theme colors at session start."))
+    print(dim("  • Docs and sources: hoisel-configs/looks/README.md"))
+    print(dim("  • Backups: settings.json.mood.bak and current-theme.conf.mood.bak, next to each file."))
+    print(dim("  • Set NO_COLOR to disable colors."))
+    return 0
+
+
+def main(argv):
+    if not argv or argv[0] in ("help", "-h", "--help"):
+        return cmd_help()
+    if argv[0] in ("list", "ls", "-l"):
+        return cmd_list()
+    if argv[0] in ("current", "status"):
+        return cmd_current()
+    if len(argv) == 1:
+        return cmd_apply(argv[0])
+    print(red("✘ too many arguments"), file=sys.stderr)
+    return cmd_help() or 2
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "name": "rose-pine",
+  "description": "my-arcade colors, my-arcade motion",
+  "colors": {
+    "palette": {
+      "accent": "#9983b6",
+      "text": "#f0e6ff",
+      "dim": "#9b86c9",
+      "faint": "#4a2a85",
+      "read": "#38e8ff",
+      "edit": "#ffd23e",
+      "shell": "#39ff88",
+      "agent": "#b388ff",
+      "pass": "#39ff88",
+      "fail": "#ff4d6d",
+      "panel": "#2a1450",
+      "addBg": "#0f4a3a",
+      "delBg": "#5a1030",
+      "sel": "#3a1d6b"
+    },
+    "bg": "#191724",
+    "rows": "slab",
+    "border": "round",
+    "borderColor": "#ff3ec8",
+    "extras": {
+      "hp": false,
+      "combo": false
+    },
+    "rowFlags": {
+      "labels": false,
+      "markers": false,
+      "xp": false
+    },
+    "meters": "default",
+    "dividers": false,
+    "theme": "classic",
+    "gradient": [
+      "#ff3ec8",
+      "#38e8ff"
+    ]
+  },
+  "motion": {
+    "spinner": "orb-states",
+    "shimmer": 2,
+    "color": "#38e8ff",
+    "field": {
+      "shape": "none",
+      "speed": 1,
+      "scale": 1,
+      "rotation": 0,
+      "offsetX": 0,
+      "offsetY": 0,
+      "density": 1,
+      "warp": 4,
+      "size": 1,
+      "fps": 10,
+      "dither": "8x8"
+    }
+  }
+}

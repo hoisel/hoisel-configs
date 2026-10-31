@@ -13,6 +13,8 @@ This collection currently includes settings for:
 - **Ulauncher (`ulauncher/settings.json`, `ulauncher/extensions.json`):** Settings for the Ulauncher application launcher, including hotkeys, theme, and installed extensions.
 - **Tmux (`tmux/.tmux.conf`):** Configuration for the Tmux terminal multiplexer, including mouse support, pane navigation (Ctrl+Arrows), and split shortcuts (Alt+Arrows).
 - **Cheat Sheets (`cheat-sheets/`):** Quick reference guides, including a Git aliases cheat sheet.
+- **Scripts (`bin/`):** Personal commands, linked into `~/.local/bin`. Currently `mood`, which switches the look below.
+- **Looks (`looks/`):** Matching visual styles across Claude Code (custom themes), the glowup mod (packs) and Kitty (themes), switched together with `mood <look>`. Install with `./looks/install.sh`; see [`looks/README.md`](looks/README.md) for how the pieces relate and how to add a look.
 
 ## Usage
 
@@ -41,6 +43,9 @@ ln -s /path/to/hoisel-configs/ulauncher/extensions.json ~/.config/ulauncher/exte
 
 # For Cheat Sheets
 ln -s /path/to/hoisel-configs/cheat-sheets ~/.hoisel/cheat-sheets
+
+# For the looks and the mood command (creates all the links itself)
+/path/to/hoisel-configs/looks/install.sh
 ```
 
 ## Secrets

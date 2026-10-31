@@ -1,0 +1,66 @@
+{
+  "format": 1,
+  "name": "my-cozy",
+  "description": "cozy pastels on warm near-black, copper cards, dithered field",
+  "colors": {
+    "palette": {
+      "accent": "#f4a6b8",
+      "text": "#f2e8dc",
+      "dim": "#b39c86",
+      "faint": "#866b55",
+      "read": "#9ccfe0",
+      "edit": "#ffd9a0",
+      "shell": "#a8d5a2",
+      "agent": "#d7b4f3",
+      "pass": "#a8d5a2",
+      "fail": "#f28b82",
+      "panel": "#1e1915",
+      "addBg": "#2a3f2e",
+      "delBg": "#4a2a2e",
+      "sel": "#3a2f29"
+    },
+    "bg": "#14110f",
+    "rows": "slab",
+    "border": "single",
+    "borderColor": "#c8875a",
+    "extras": {
+      "hp": false,
+      "combo": false
+    },
+    "rowFlags": {
+      "labels": false,
+      "markers": false,
+      "xp": false
+    },
+    "meters": "dither",
+    "dividers": false,
+    "theme": "classic",
+    "gradient": [
+      "#f4a6b8",
+      "#ffd9a0"
+    ],
+    "pet": {
+      "body": "#e8908a",
+      "light": "#f5b3a8",
+      "shade": "#b86a66"
+    }
+  },
+  "motion": {
+    "spinner": "orb-states",
+    "shimmer": 1,
+    "color": "#ffd9a0",
+    "field": {
+      "shape": "simplex",
+      "speed": 0.3,
+      "scale": 0.36,
+      "rotation": 24,
+      "offsetX": -0.22,
+      "offsetY": 0.26,
+      "density": 1,
+      "size": 1,
+      "fps": 8,
+      "dither": "4x4",
+      "color": "#735a43"
+    }
+  }
+}

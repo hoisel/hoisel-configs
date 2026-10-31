@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "name": "sunset",
+  "description": "coral, gold and dusk violet over a twilight plum sky",
+  "colors": {
+    "palette": {
+      "accent": "#bd674e",
+      "text": "#ffe8d6",
+      "dim": "#c9a08f",
+      "faint": "#93697e",
+      "read": "#8ec5e6",
+      "edit": "#ffc857",
+      "shell": "#b8d98a",
+      "agent": "#e48ab8",
+      "pass": "#b8d98a",
+      "fail": "#ff5f5f",
+      "panel": "#2a1c2b",
+      "addBg": "#243a2a",
+      "delBg": "#4f1e26",
+      "sel": "#3d2735"
+    },
+    "bg": "#181119",
+    "rows": "slab",
+    "border": "round",
+    "borderColor": "#ff7b54",
+    "extras": {
+      "hp": false,
+      "combo": false
+    },
+    "rowFlags": {
+      "labels": false,
+      "markers": false,
+      "xp": false
+    },
+    "meters": "default",
+    "dividers": false,
+    "theme": "classic",
+    "gradient": [
+      "#ff7b54",
+      "#ffc857"
+    ]
+  },
+  "motion": {
+    "spinner": "orb-states",
+    "shimmer": 2,
+    "color": "#ffc857",
+    "field": {
+      "shape": "none",
+      "speed": 1,
+      "scale": 1,
+      "rotation": 0,
+      "offsetX": 0,
+      "offsetY": 0,
+      "density": 1,
+      "warp": 4,
+      "size": 1,
+      "fps": 10,
+      "dither": "8x8"
+    }
+  }
+}

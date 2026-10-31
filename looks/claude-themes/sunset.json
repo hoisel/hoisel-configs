@@ -1,0 +1,21 @@
+{
+  "name": "Sunset",
+  "base": "dark-daltonized",
+  "overrides": {
+    "composerSidebarBackground": "rgb(24,17,25)",
+    "success": "rgb(184,217,138)",
+    "userMessageBackground": "rgb(61,39,53)",
+    "userMessageBackgroundHover": "rgb(77,49,66)",
+    "selectionBg": "rgb(77,49,66)",
+    "bashMessageBackgroundColor": "rgb(42,28,43)",
+    "memoryBackgroundColor": "rgb(42,28,43)",
+    "promptBorder": "rgb(201,160,143)",
+    "promptBorderShimmer": "rgb(255,232,214)",
+    "permission": "rgb(255,179,138)",
+    "permissionShimmer": "rgb(255,210,180)",
+    "suggestion": "rgb(255,179,138)",
+    "text": "rgb(255,232,214)",
+    "subtle": "rgb(201,160,143)",
+    "inactive": "rgb(201,160,143)"
+  }
+}
