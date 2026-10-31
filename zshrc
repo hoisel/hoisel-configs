@@ -184,7 +184,6 @@ PATH=~/.console-ninja/.bin:$PATH
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-alias cursor='/home/hoisel/Applications/cursor.AppImage'
 
 #zodixe (rupa z replacement)
 eval "$(zoxide init zsh)"
@@ -421,3 +420,82 @@ alias sync-envs-fe='sync-envs-and-open-windsurf ~/Dev/Professional/NameCoach/.en
 
 # Added by Antigravity CLI installer
 export PATH="/home/hoisel/.local/bin:$PATH"
+
+# Claude Desktop (Cowork) VM disk: check usage and compact zero blocks safely
+_claude_vm_dir="$HOME/.config/Claude/vm_bundles/claudevm.bundle"
+
+_claude_vm_running() { ps -eo args | grep -q '^qemu-system.*claude-cowork'; }
+
+claude-vm-status() {
+  [[ -d $_claude_vm_dir ]] || { echo "VM do Claude Desktop não encontrada"; return 1; }
+  if _claude_vm_running; then
+    echo "Estado: VM LIGADA (feche o Claude Desktop antes de compactar)"
+  else
+    echo "Estado: VM desligada"
+  fi
+  echo "Total da pasta da VM: $(du -sh "$_claude_vm_dir" | cut -f1)"
+  python3 -I - "$_claude_vm_dir"/rootfs.img "$_claude_vm_dir"/sessiondata.img <<'EOF'
+import os, sys
+Z = b"\0" * 4096
+g = lambda n: f"{n / 2**30:.2f}G"
+total = 0
+print(f"{'arquivo':<18}{'nominal':>10}{'no disco':>10}{'ganho':>10}")
+for p in sys.argv[1:]:
+    if not os.path.exists(p):
+        continue
+    st = os.stat(p)
+    zeros = 0
+    with open(p, "rb", buffering=0) as f:
+        fd, off = f.fileno(), 0
+        while off < st.st_size:
+            try:
+                off = os.lseek(fd, off, os.SEEK_DATA)
+            except OSError:
+                break
+            end = os.lseek(fd, off, os.SEEK_HOLE)
+            os.lseek(fd, off, os.SEEK_SET)
+            pos = off
+            while pos < end:
+                b = os.read(fd, min(1 << 20, end - pos))
+                if not b:
+                    break
+                zeros += sum(b[i:i + 4096] == Z for i in range(0, len(b) - 4095, 4096)) * 4096
+                pos += len(b)
+            off = end
+    total += zeros
+    print(f"{os.path.basename(p):<18}{g(st.st_size):>10}{g(st.st_blocks * 512):>10}{g(zeros):>10}")
+print(f"Ganho projetado com claude-vm-compact: {total / 2**30:.2f} GiB")
+EOF
+}
+
+claude-vm-compact() {
+  [[ -d $_claude_vm_dir ]] || { echo "VM do Claude Desktop não encontrada"; return 1; }
+  _claude_vm_running && { echo "Feche o Claude Desktop antes (VM ligada)"; return 1; }
+  local f sum_before sum_after ok=1
+  local avail_before=$(df --output=avail -B1 / | tail -1)
+  for f in "$_claude_vm_dir"/{rootfs,sessiondata}.img; do
+    [[ -f $f ]] || continue
+    sum_before=$(sha256sum "$f" | cut -d' ' -f1)
+    _claude_vm_running && { echo "A VM ligou durante a operação, abortando"; return 1; }
+    fallocate --dig-holes "$f"
+    sum_after=$(sha256sum "$f" | cut -d' ' -f1)
+    if [[ $sum_before == $sum_after ]]; then
+      echo "OK  ${f:t}  ($(du -h "$f" | cut -f1) no disco)"
+    else
+      echo "CHECKSUM DIFERENTE  ${f:t}"; ok=0
+    fi
+  done
+  local avail_after=$(df --output=avail -B1 / | tail -1)
+  echo "Liberado: $(( (avail_after - avail_before) / 1048576 )) MB"
+  (( ok ))
+}
+
+# Abre o projeto pelo workspace pessoal (*.local.code-workspace na raiz), se existir.
+code() {
+  local target="${1:-.}" ws
+  if [[ $# -le 1 && -d "$target" ]]; then
+    ws=( "$target"/*.local.code-workspace(N) )
+    (( ${#ws} == 1 )) && { command code "${ws[1]}"; return }
+  fi
+  command code "$@"
+}

@@ -29,7 +29,7 @@ mood                 # help, with every look and whether it's complete
 mood sunset          # apply one
 ```
 
-`install.sh` is safe to re-run. Anything already at a target path that isn't the right link is moved to `<name>.pre-looks.<timestamp>`.
+The repo's top-level `./install.sh` runs this too, after linking the other configs, so on a new machine that one command is enough. `looks/install.sh` is safe to re-run. Anything already at a target path that isn't the right link is moved to `<name>.pre-looks.<timestamp>`.
 
 kitty must include `current-theme.conf` (this repo's `kitty/kitty.conf` already does, between the `BEGIN_KITTY_THEME` markers). `mood` overwrites `current-theme.conf` with the chosen look.
 

@@ -4,16 +4,19 @@ Personal dotfiles, used to set up new machines and keep machines in sync. The ow
 
 ## This checkout is live
 
-Most of `$HOME` points into this working tree, so editing a file here changes the running machine, and **switching branches swaps the live config**. Before `git switch`/`checkout`/`stash`, check what the target branch removes or changes.
+Every tracked config in `$HOME` is a symlink into this working tree (no plain copies), so editing a file here changes the running machine, and **switching branches swaps the live config**. Before `git switch`/`checkout`/`stash`, check what the target branch removes or changes.
 
 | Live path | How |
 |---|---|
-| `~/.gitconfig`, `~/.tmux.conf`, `~/.config/starship.toml`, `~/.config/ulauncher/{settings,extensions}.json` | symlink to the file here |
-| `~/.local/bin/mood`, `~/.config/kitty/{Sunset,Rosé Pine}.conf` | symlink to the file here |
-| `~/.claude/themes`, `~/.claude/glowup/packs` | symlink to the **whole directory** here (`looks/claude-themes`, `looks/glowup-packs`) |
-| `~/.zshrc`, `~/.config/kitty/kitty.conf` | **copies**, not links. They drift: compare both ways before changing either, and ask which side wins |
+| `~/.zshrc`, `~/.gitconfig`, `~/.tmux.conf`, `~/.config/starship.toml`, `~/.config/ulauncher/{settings,extensions}.json` | symlink to the file here |
+| `~/.local/bin/mood`, `~/.config/kitty/kitty.conf`, `~/.config/kitty/{Sunset,Rosé Pine}.conf` | symlink to the file here |
+| `~/.claude/themes`, `~/.claude/glowup/packs`, `~/.hoisel/cheat-sheets` | symlink to the **whole directory** here (`looks/claude-themes`, `looks/glowup-packs`, `cheat-sheets`) |
+
+`install.sh` (configs, then it calls `looks/install.sh`) is the source of truth for these links. When adding a config, add its `link` line there and update this table and the README's table together.
 
 Claude Code and glowup save themes and packs by writing a temp file and renaming it, so they write straight into `looks/` and those changes show up in `git status`. That's expected. Never replace the directory links with per-file links; a rename would silently turn them back into plain files.
+
+The same risk applies to file links: kitty's theme picker (`kitty +kitten themes`) rewrites the theme block in `kitty.conf`, and a tool that saves via temp file plus rename would replace the link with a plain file. After using the picker, check that `ls -la ~/.config/kitty/kitty.conf` still shows a link. The looks setup doesn't need the picker: `mood` only overwrites `current-theme.conf`.
 
 ## Git
 
