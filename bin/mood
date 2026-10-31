@@ -195,7 +195,10 @@ def backup(path):
 
 
 def reload_kitty():
-    """kitty re-reads kitty.conf on SIGUSR1; then drop any live OSC 11 override in this window."""
+    """kitty re-reads kitty.conf on SIGUSR1, but a background set with OSC 11
+    (printf '\\033]11;#hex\\033\\\\') outlives that reload. Reset it with OSC 111 on
+    every kitty window's tty, not just /dev/tty: run from Claude Code's `!` or a
+    tool call there is no controlling tty."""
     try:
         pids = subprocess.run(["pgrep", "-x", "kitty"], capture_output=True, text=True).stdout.split()
     except OSError:
@@ -205,11 +208,20 @@ def reload_kitty():
             os.kill(int(pid), signal.SIGUSR1)
         except (OSError, ValueError):
             pass
-    try:
-        with open("/dev/tty", "w") as tty:
-            tty.write("\033]111\033\\")
-    except OSError:
-        pass
+    ttys = set()
+    if pids:
+        try:
+            out = subprocess.run(["ps", "-o", "tty=", "--ppid", ",".join(pids)],
+                                 capture_output=True, text=True).stdout.split()
+            ttys = {f"/dev/{t}" for t in out if t.startswith("pts/")}
+        except OSError:
+            pass
+    for t in sorted(ttys) or ["/dev/tty"]:
+        try:
+            with open(t, "w") as tty:
+                tty.write("\033]111\033\\")
+        except OSError:
+            pass
     return len(pids)
 
 
