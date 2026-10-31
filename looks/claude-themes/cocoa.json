@@ -1,6 +1,6 @@
 {
   "name": "Cocoa",
-  "base": "dark",
+  "base": "dark-ansi",
   "overrides": {
     "composerSidebarBackground": "rgb(20,17,15)",
     "userMessageBackground": "rgb(42,35,32)",
@@ -18,12 +18,6 @@
     "inactive": "rgb(134,107,85)",
     "success": "rgb(168,213,162)",
     "error": "rgb(242,139,130)",
-    "bashBorder": "rgb(200,135,90)",
-    "diffAdded": "rgb(42,63,46)",
-    "diffAddedDimmed": "rgb(34,44,36)",
-    "diffAddedWord": "rgb(66,99,72)",
-    "diffRemoved": "rgb(74,42,46)",
-    "diffRemovedDimmed": "rgb(52,34,36)",
-    "diffRemovedWord": "rgb(115,62,68)"
+    "bashBorder": "rgb(200,135,90)"
   }
 }

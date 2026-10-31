@@ -23,7 +23,7 @@ The [`mood`](../bin/mood) command switches all three at once.
 Prerequisites: Claude Code, the glowup plugin (`/plugin`), kitty, python3, and `~/.local/bin` on `PATH`.
 
 ```bash
-./looks/install.sh   # links mood, the themes dir, the packs dir and the kitty themes
+./looks/install.sh   # links mood, the themes dir, the packs dir and the kitty themes; sets the status line
 mood                 # help, with every look and whether it's complete
 mood sunset          # apply one
 ```
@@ -41,7 +41,7 @@ kitty must include `current-theme.conf` (this repo's `kitty/kitty.conf` already 
 
 `mood <look>` then:
 
-1. copies the kitty theme over `~/.config/kitty/current-theme.conf`, sends `SIGUSR1` to every kitty (kitty re-reads its config on that signal) and resets any live background override in the current window
+1. copies the kitty theme over `~/.config/kitty/current-theme.conf`, sends `SIGUSR1` to every kitty (kitty re-reads its config on that signal) and resets any live background override (OSC 111) in every kitty window
 2. in `~/.claude/settings.json` sets:
    - `"theme": "custom:<look>"`
    - glowup's plugin options (`pluginConfigs."glowup@glowup".options`): `pack` = `<look>`, `theme` = `classic`, `spinner` = `pack`. The last two clear glowup's saved theme and spinner choices so the pack's own palette and spinner show.
@@ -59,7 +59,7 @@ The order of glowup's status line fields is a personal glowup setting, not part 
 cwd,branch,activity,effort,model,plan,agents,changes,week
 ```
 
-`install.sh` writes this list to `settings.json` as glowup's `/plugin` option `statusline` (`pluginConfigs."glowup@glowup".options.statusline`). glowup applies a changed option at the next Claude Code start. To change the order, edit `STATUSLINE` in `install.sh` and re-run it, or run `/glowup statusline fields cwd branch activity …` inside Claude Code and then update `install.sh` to match. Fields with nothing to show are hidden; `branch`, for example, only appears inside a git repo.
+`looks/install.sh` writes this list to `settings.json` as glowup's `/plugin` option `statusline` (`pluginConfigs."glowup@glowup".options.statusline`), backing up the previous file to `settings.json.pre-looks.statusline` when it changes. glowup applies a changed option at the next Claude Code start. To change the order, edit `STATUSLINE` in `looks/install.sh` and re-run it, or run `/glowup statusline fields cwd branch activity …` inside Claude Code and then update `looks/install.sh` to match. Fields with nothing to show are hidden; `branch`, for example, only appears inside a git repo.
 
 ## Create a new look
 
@@ -82,7 +82,7 @@ Theme files are `{ "name", "base", "overrides" }`. `base` is a built-in (`dark`,
 | `userMessageBackground`, `userMessageBackgroundHover` | your messages in the transcript |
 | `text`, `subtle`, `inactive` | main and secondary text |
 | `permission`, `suggestion` | permission prompts and other accents. **Not** inline code: see Gotchas |
-| `diffAdded`, `diffRemoved`, `diffAddedDimmed`, `diffRemovedDimmed`, `diffAddedWord`, `diffRemovedWord` | diff line and changed-word backgrounds. Without them, diffs use colors hardcoded per base, not the base's own `diff*` values |
+| `diffAdded`, `diffRemoved`, `diffAddedDimmed`, `diffRemovedDimmed`, `diffAddedWord`, `diffRemovedWord` | diff line and changed-word backgrounds. Without them, diffs use colors hardcoded per base, not the base's own `diff*` values. On an `*-ansi` base the diff renders in 16-color mode with no line backgrounds by default, and RGB `diff*` overrides get reduced to the nearest ANSI color (both lines end up the same gray), so `cocoa` leaves them out |
 | `success`, `error` | the tool-call dot and success/error notices. The `*-daltonized` bases make success blue |
 | `promptBorder`, `selectionBg`, `bashMessageBackgroundColor`, `memoryBackgroundColor` | input border, selection, `!` shell and memory blocks |
 
@@ -95,5 +95,5 @@ These names were read from the Claude Code 2.1.314 binary, not from docs; a late
 - **glowup never paints backgrounds.** The terminal background is kitty's; the side pane background is Claude Code's (`composerSidebarBackground`). The pack's `"bg"` only tells glowup what to blend toward, and it's also the text color of the `slab` prompt bar.
 - **Don't edit glowup's code** (in `~/.claude/plugins/cache/glowup/`). Things only code can change: the `PROMPT NN` label and the padding of the `slab` bar, and tool glyphs in `slab`. A plugin update would wipe any edit anyway.
 - **Directories, not files, are symlinked** for themes and packs. Claude Code and glowup save by writing a temp file and renaming it, which would turn a per-file symlink back into a plain file and silently stop syncing to this repo.
-- **Inline code and file paths ignore overrides.** In 2.1.314 the markdown renderer colors code spans with the *base* theme's `permission`, never the override (it resolves colors from the base name, not the resolved theme). The only lever is `base`: `dark` gives lavender `#b1b9f9`, `dark-daltonized` gives light blue `#99ccff`. `rose-pine` uses `dark` for this reason.
+- **Inline code and file paths ignore overrides.** In 2.1.314 the markdown renderer colors code spans with the *base* theme's `permission`, never the override (it resolves colors from the base name, not the resolved theme). The only lever is `base`: `dark` gives lavender `#b1b9f9`, `dark-daltonized` gives light blue `#99ccff`, and `dark-ansi` uses the terminal's `ansi:blueBright` (kitty `color12`). `rose-pine` uses `dark` for this reason; `cocoa` uses `dark-ansi` so inline code matches the blue of directories in `ls` under the Cocoa kitty theme. With an `*-ansi` base, every token the theme doesn't override also comes from the kitty palette.
 - **One-off background, no saving:** `printf '\033]11;#181119\033\\'` sets the current kitty window's background; `printf '\033]111\033\\'` resets it. A background set this way survives kitty config reloads, so it would hide the look's background; `mood` sends the reset to every kitty window for that reason.
