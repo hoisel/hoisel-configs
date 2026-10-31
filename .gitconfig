@@ -39,3 +39,5 @@
 [maintenance]
 	auto = true
 	repo = /home/hoisel/Dev/Professional/NameCoach/namecoach-fe
+[fetch]
+	prune = true
