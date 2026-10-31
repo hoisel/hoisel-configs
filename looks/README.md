@@ -52,6 +52,16 @@ Before writing, it copies each file to `<file>.mood.bak` (one rolling backup eac
 
 Other commands: `mood list` (details and what's active), `mood current`, `mood help`. Colors turn off when output isn't a terminal or `NO_COLOR` is set.
 
+## Status line
+
+The order of glowup's status line fields is a personal glowup setting, not part of a pack, so every look shares it. The order is: folder, branch, activity, then the rest:
+
+```
+cwd,branch,activity,effort,model,plan,agents,changes,week
+```
+
+`install.sh` writes this list to `settings.json` as glowup's `/plugin` option `statusline` (`pluginConfigs."glowup@glowup".options.statusline`). glowup applies a changed option at the next Claude Code start. To change the order, edit `STATUSLINE` in `install.sh` and re-run it, or run `/glowup statusline fields cwd branch activity …` inside Claude Code and then update `install.sh` to match. Fields with nothing to show are hidden; `branch`, for example, only appears inside a git repo.
+
 ## Create a new look
 
 Say the look is `forest`, named "Forest".
@@ -72,7 +82,8 @@ Theme files are `{ "name", "base", "overrides" }`. `base` is a built-in (`dark`,
 | `composerSidebarBackground` | background of docked side panes, including glowup's pane (dark default `#262626`) |
 | `userMessageBackground`, `userMessageBackgroundHover` | your messages in the transcript |
 | `text`, `subtle`, `inactive` | main and secondary text |
-| `permission`, `suggestion` | inline code and file paths (blue by default), permission prompts |
+| `permission`, `suggestion` | permission prompts and other accents. **Not** inline code: see Gotchas |
+| `diffAdded`, `diffRemoved`, `diffAddedDimmed`, `diffRemovedDimmed`, `diffAddedWord`, `diffRemovedWord` | diff line and changed-word backgrounds. Without them, diffs use colors hardcoded per base, not the base's own `diff*` values |
 | `success`, `error` | the tool-call dot and success/error notices. The `*-daltonized` bases make success blue |
 | `promptBorder`, `selectionBg`, `bashMessageBackgroundColor`, `memoryBackgroundColor` | input border, selection, `!` shell and memory blocks |
 
@@ -85,4 +96,5 @@ These names were read from the Claude Code 2.1.314 binary, not from docs; a late
 - **glowup never paints backgrounds.** The terminal background is kitty's; the side pane background is Claude Code's (`composerSidebarBackground`). The pack's `"bg"` only tells glowup what to blend toward, and it's also the text color of the `slab` prompt bar.
 - **Don't edit glowup's code** (in `~/.claude/plugins/cache/glowup/`). Things only code can change: the `PROMPT NN` label and the padding of the `slab` bar, and tool glyphs in `slab`. A plugin update would wipe any edit anyway.
 - **Directories, not files, are symlinked** for themes and packs. Claude Code and glowup save by writing a temp file and renaming it, which would turn a per-file symlink back into a plain file and silently stop syncing to this repo.
-- **One-off background, no saving:** `printf '\033]11;#181119\033\\'` sets the current kitty window's background; `printf '\033]111\033\\'` resets it.
+- **Inline code and file paths ignore overrides.** In 2.1.314 the markdown renderer colors code spans with the *base* theme's `permission`, never the override (it resolves colors from the base name, not the resolved theme). The only lever is `base`: `dark` gives lavender `#b1b9f9`, `dark-daltonized` gives light blue `#99ccff`. `rose-pine` uses `dark` for this reason.
+- **One-off background, no saving:** `printf '\033]11;#181119\033\\'` sets the current kitty window's background; `printf '\033]111\033\\'` resets it. A background set this way survives kitty config reloads, so it would hide the look's background; `mood` sends the reset to every kitty window for that reason.

@@ -43,6 +43,33 @@ for f in "$LOOKS"/kitty/*.conf; do
   link "$f" "$KITTY_DIR/$(basename "$f")"
 done
 
+# glowup status line field order. A personal glowup setting, shared by every look.
+# Written as glowup's /plugin option in settings.json; glowup applies a changed
+# value at the next Claude Code session start (same as `/glowup statusline fields`).
+STATUSLINE="cwd,branch,activity,effort,model,plan,agents,changes,week"
+echo "glowup status line"
+python3 - "$CLAUDE_DIR/settings.json" "$STATUSLINE" <<'EOF'
+import json, os, shutil, sys
+path, fields = sys.argv[1], sys.argv[2]
+settings = {}
+if os.path.exists(path):
+    with open(path, encoding="utf-8") as f:
+        settings = json.load(f)
+opts = settings.setdefault("pluginConfigs", {}).setdefault("glowup@glowup", {}).setdefault("options", {})
+if opts.get("statusline") == fields:
+    print(f"  ok      statusline {fields}")
+    sys.exit(0)
+if os.path.exists(path):
+    shutil.copy2(path, path + ".pre-looks.statusline")
+opts["statusline"] = fields
+os.makedirs(os.path.dirname(path), exist_ok=True)
+tmp = path + ".looks.tmp"
+with open(tmp, "w", encoding="utf-8") as f:
+    f.write(json.dumps(settings, indent=2, ensure_ascii=False) + "\n")
+os.replace(tmp, path)
+print(f"  set     statusline {fields}  (applied at next Claude Code start)")
+EOF
+
 case ":$PATH:" in
   *":$HOME/.local/bin:"*) ;;
   *) echo "warning: ~/.local/bin is not on PATH; add it so \`mood\` is found" ;;

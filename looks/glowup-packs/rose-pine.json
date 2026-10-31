@@ -1,28 +1,28 @@
 {
   "format": 1,
   "name": "rose-pine",
-  "description": "my-arcade colors, my-arcade motion",
+  "description": "Rose Pine palette, iris slab bar",
   "colors": {
     "palette": {
       "accent": "#9983b6",
-      "text": "#f0e6ff",
-      "dim": "#9b86c9",
-      "faint": "#4a2a85",
-      "read": "#38e8ff",
-      "edit": "#ffd23e",
-      "shell": "#39ff88",
-      "agent": "#b388ff",
-      "pass": "#39ff88",
-      "fail": "#ff4d6d",
-      "panel": "#2a1450",
-      "addBg": "#0f4a3a",
-      "delBg": "#5a1030",
-      "sel": "#3a1d6b"
+      "text": "#e0def4",
+      "dim": "#908caa",
+      "faint": "#6e6a86",
+      "read": "#9ccfd8",
+      "edit": "#f6c177",
+      "shell": "#3e8fb0",
+      "agent": "#c4a7e7",
+      "pass": "#9ccfd8",
+      "fail": "#eb6f92",
+      "panel": "#1f1d2e",
+      "addBg": "#1f3a3f",
+      "delBg": "#3d2033",
+      "sel": "#403d52"
     },
     "bg": "#191724",
     "rows": "slab",
     "border": "round",
-    "borderColor": "#ff3ec8",
+    "borderColor": "#ebbcba",
     "extras": {
       "hp": false,
       "combo": false
@@ -36,14 +36,14 @@
     "dividers": false,
     "theme": "classic",
     "gradient": [
-      "#ff3ec8",
-      "#38e8ff"
+      "#ebbcba",
+      "#c4a7e7"
     ]
   },
   "motion": {
     "spinner": "orb-states",
     "shimmer": 2,
-    "color": "#38e8ff",
+    "color": "#9ccfd8",
     "field": {
       "shape": "none",
       "speed": 1,

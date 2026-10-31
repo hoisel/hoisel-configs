@@ -1,6 +1,6 @@
 {
   "name": "Sunset",
-  "base": "dark-daltonized",
+  "base": "dark",
   "overrides": {
     "composerSidebarBackground": "rgb(24,17,25)",
     "success": "rgb(184,217,138)",
@@ -16,6 +16,14 @@
     "suggestion": "rgb(255,179,138)",
     "text": "rgb(255,232,214)",
     "subtle": "rgb(201,160,143)",
-    "inactive": "rgb(201,160,143)"
+    "inactive": "rgb(201,160,143)",
+    "error": "rgb(255,95,95)",
+    "diffAdded": "rgb(36,58,42)",
+    "diffAddedDimmed": "rgb(36,46,38)",
+    "diffAddedWord": "rgb(58,96,66)",
+    "diffRemoved": "rgb(79,30,38)",
+    "diffRemovedDimmed": "rgb(56,30,36)",
+    "diffRemovedWord": "rgb(130,48,60)",
+    "bashBorder": "rgb(255,107,26)"
   }
 }
