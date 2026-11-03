@@ -17,6 +17,7 @@ The [`mood`](../bin/mood) command switches all three at once.
 | `rose-pine` | `#191724` | `#9983b6` | "Rose Pine" | `rose-pine` (slab) | `Rosé Pine.conf` (upstream Rosé Pine) |
 | `sunset` | `#181119` | `#bd674e` | "Sunset" | `sunset` (slab) | `Sunset.conf` |
 | `cocoa` | `#14110f` | `#f4a6b8` | "Cocoa" | `cocoa` (slab, dithered pane field) | `Cocoa.conf` |
+| `campfire` | `#23272d` | `#f26b21` | "Campfire" | `campfire` (slab, dithered warp pane field, Portuguese spinner words) | `Campfire.conf` |
 
 ## Install on a new machine
 
@@ -93,6 +94,7 @@ These names were read from the Claude Code 2.1.314 binary, not from docs; a late
 - **Claude Code reads theme colors only at startup.** Editing a theme file, or re-picking it in `/theme`, does nothing until you `/exit` and start again. Creating a theme in `/theme` writes it with empty `overrides`; fill them, then restart.
 - **`/glowup color <role> <hex>` sits on top of every pack** and survives `/glowup pack` and `mood`. Clear it with `/glowup color reset [role]` or the pack's colors won't show. `/glowup pack save` bakes it into the saved file.
 - **glowup never paints backgrounds.** The terminal background is kitty's; the side pane background is Claude Code's (`composerSidebarBackground`). The pack's `"bg"` only tells glowup what to blend toward, and it's also the text color of the `slab` prompt bar.
+- **Pack spinner words need a glowup theme other than `classic`.** glowup ignores `colors.words` and shows Claude Code's own rotating words whenever the pack's `colors.theme` is `classic` (also the default when it's left out). `campfire` sets `"theme": "glowup"` for this. Every built-in glowup theme other than `classic` changes only colors and words, and the pack sets all 14 palette colors, so only the words differ from a `classic` start. This is the pack's `colors.theme`, not the glowup `/plugin` option `theme` that `mood` sets to `classic`; that value only clears a saved `/glowup theme` override. Reduced motion also keeps Claude Code's words.
 - **Don't edit glowup's code** (in `~/.claude/plugins/cache/glowup/`). Things only code can change: the `PROMPT NN` label and the padding of the `slab` bar, and tool glyphs in `slab`. A plugin update would wipe any edit anyway.
 - **Directories, not files, are symlinked** for themes and packs. Claude Code and glowup save by writing a temp file and renaming it, which would turn a per-file symlink back into a plain file and silently stop syncing to this repo.
 - **Inline code and file paths ignore overrides.** In 2.1.314 the markdown renderer colors code spans with the *base* theme's `permission`, never the override (it resolves colors from the base name, not the resolved theme). The only lever is `base`: `dark` gives lavender `#b1b9f9`, `dark-daltonized` gives light blue `#99ccff`, and `dark-ansi` uses the terminal's `ansi:blueBright` (kitty `color12`). `rose-pine` uses `dark` for this reason; `cocoa` uses `dark-ansi` so inline code matches the blue of directories in `ls` under the Cocoa kitty theme. With an `*-ansi` base, every token the theme doesn't override also comes from the kitty palette.
