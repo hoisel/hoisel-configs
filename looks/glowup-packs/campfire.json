@@ -1,0 +1,81 @@
+{
+  "format": 1,
+  "name": "campfire",
+  "description": "flame orange, dusty rose and olive on a cool slate night",
+  "colors": {
+    "palette": {
+      "accent": "#f26b21",
+      "text": "#e7ebf0",
+      "dim": "#8b9097",
+      "faint": "#6e7279",
+      "read": "#86a8ad",
+      "edit": "#e5b567",
+      "shell": "#adb873",
+      "agent": "#d6939d",
+      "pass": "#adb873",
+      "fail": "#e8524a",
+      "panel": "#2a2f36",
+      "addBg": "#2d3a2b",
+      "delBg": "#46292b",
+      "sel": "#363c45"
+    },
+    "bg": "#23272d",
+    "rows": "slab",
+    "border": "round",
+    "borderColor": "#7a6148",
+    "extras": {
+      "hp": false,
+      "combo": false
+    },
+    "rowFlags": {
+      "labels": false,
+      "markers": false,
+      "xp": false
+    },
+    "meters": "dither",
+    "dividers": false,
+    "theme": "glowup",
+    "gradient": [
+      "#f26b21",
+      "#d6939d"
+    ],
+    "words": [
+      "Atiçando o fogo",
+      "Juntando lenha",
+      "Soprando a brasa",
+      "Crepitando",
+      "Assando marshmallow",
+      "Acendendo a fogueira",
+      "Abanando as chamas",
+      "Estalando gravetos",
+      "Cuidando da brasa",
+      "Contando histórias",
+      "Aquecendo as mãos",
+      "Olhando as faíscas"
+    ],
+    "pet": {
+      "body": "#f26b21",
+      "light": "#f79a63",
+      "shade": "#b8521c"
+    }
+  },
+  "motion": {
+    "spinner": "orb-states",
+    "shimmer": 1,
+    "color": "#e5b567",
+    "field": {
+      "shape": "warp",
+      "speed": 0.5,
+      "scale": 0.5,
+      "rotation": 90,
+      "offsetX": 0,
+      "offsetY": 0.3,
+      "density": 0.8,
+      "warp": 5,
+      "size": 1,
+      "fps": 8,
+      "dither": "4x4",
+      "color": "#363b43"
+    }
+  }
+}
