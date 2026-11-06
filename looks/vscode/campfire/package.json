@@ -1,0 +1,18 @@
+{
+  "name": "campfire-theme",
+  "displayName": "Campfire",
+  "description": "Campfire look (Claude Code + kitty) for VS Code",
+  "version": "0.1.0",
+  "publisher": "hoisel",
+  "engines": { "vscode": "^1.80.0" },
+  "categories": ["Themes"],
+  "contributes": {
+    "themes": [
+      {
+        "label": "Campfire",
+        "uiTheme": "vs-dark",
+        "path": "./themes/campfire-color-theme.json"
+      }
+    ]
+  }
+}
