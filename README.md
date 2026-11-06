@@ -14,7 +14,7 @@ This collection currently includes settings for:
 - **Tmux (`tmux/.tmux.conf`):** Configuration for the Tmux terminal multiplexer, including mouse support, pane navigation (Ctrl+Arrows), and split shortcuts (Alt+Arrows).
 - **Cheat Sheets (`cheat-sheets/`):** Quick reference guides (HTML) for the Git aliases and Tmux.
 - **Scripts (`bin/`):** Personal commands, linked into `~/.local/bin`. Currently `mood`, which switches the look below.
-- **Looks (`looks/`):** Matching visual styles across Claude Code (custom themes), the glowup mod (packs) and Kitty (themes), switched together with `mood <look>`. Installed by `./install.sh` (or on their own with `./looks/install.sh`); see [`looks/README.md`](looks/README.md) for how the pieces relate and how to add a look.
+- **Looks (`looks/`):** Matching visual styles across Claude Code (custom themes), the glowup mod (packs), Kitty (themes) and, optionally, VS Code (color themes), switched together with `mood <look>`. Installed by `./install.sh` (or on their own with `./looks/install.sh`); see [`looks/README.md`](looks/README.md) for how the pieces relate and how to add a look.
 - **Installer (`install.sh`):** Links everything above into place; see [Usage](#usage).
 - **`CLAUDE.md`:** Notes for Claude Code when working in this repo.
 

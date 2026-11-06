@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
-"""mood: switch a matched "look" across Claude Code, glowup and kitty at once.
+"""mood: switch a matched "look" across Claude Code, glowup, kitty and VS Code at once.
 
 A look is named after a Claude Code custom theme (~/.claude/themes/<slug>.json).
-Applying it sets three things that share that slug:
+Applying it sets the things that share that slug:
   - the Claude Code theme   -> settings.json "theme": "custom:<slug>"
   - the glowup pack         -> settings.json glowup plugin option "pack": "<slug>"
   - the kitty theme         -> the ~/.config/kitty/*.conf whose "## name:" matches
                                the Claude Code theme's name, copied to current-theme.conf
+  - the VS Code theme       -> the installed VS Code color theme whose label matches
+    (optional, --no-vscode     the Claude Code theme's name, set as "workbench.colorTheme"
+     skips it)                 in VS Code's settings.json
 
 Source and docs: hoisel-configs/bin/mood and hoisel-configs/looks/README.md
 """
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -28,6 +32,11 @@ GLOWUP_STORE = next((CLAUDE_DIR / "plugins" / "store").glob("glowup_glowup-*.jso
 KITTY_DIR = Path(os.environ.get("XDG_CONFIG_HOME", HOME / ".config")) / "kitty"
 KITTY_CURRENT = KITTY_DIR / "current-theme.conf"
 GLOWUP_PLUGIN = "glowup@glowup"
+VSCODE_SETTINGS = Path(os.environ.get("XDG_CONFIG_HOME", HOME / ".config")) / "Code" / "User" / "settings.json"
+VSCODE_EXTENSIONS = HOME / ".vscode" / "extensions"
+# VS Code's settings.json is JSONC (comments, trailing commas): json.dump would drop the
+# comments, so only the value on the "workbench.colorTheme" line is rewritten.
+VSCODE_THEME_RE = re.compile(r'^([ \t]*"workbench\.colorTheme"[ \t]*:[ \t]*)"((?:[^"\\\n]|\\.)*)"', re.M)
 
 COLOR = sys.stdout.isatty() and "NO_COLOR" not in os.environ
 
@@ -110,9 +119,55 @@ def kitty_current_name():
     return None
 
 
+def vscode_themes():
+    """Map normalized label -> label for every color theme an installed VS Code extension contributes."""
+    found = {}
+    for pj in sorted(VSCODE_EXTENSIONS.glob("*/package.json")):
+        data = read_json(pj, {})
+        contributes = data.get("contributes") if isinstance(data, dict) else None
+        themes = contributes.get("themes") if isinstance(contributes, dict) else None
+        for t in themes if isinstance(themes, list) else []:
+            label = t.get("label") if isinstance(t, dict) else None
+            if isinstance(label, str) and not label.startswith("%"):
+                found.setdefault(norm(label), label)
+    return found
+
+
+def vscode_current():
+    try:
+        m = VSCODE_THEME_RE.search(VSCODE_SETTINGS.read_text(encoding="utf-8"))
+    except OSError:
+        return None
+    try:
+        return json.loads(f'"{m.group(2)}"') if m else None
+    except ValueError:
+        return m.group(2)
+
+
+def set_vscode_theme(label):
+    """Rewrite the "workbench.colorTheme" value in place. Returns an error message or None."""
+    target = VSCODE_SETTINGS.resolve()
+    try:
+        text = target.read_text(encoding="utf-8")
+    except OSError:
+        return f"{VSCODE_SETTINGS} not found"
+    m = VSCODE_THEME_RE.search(text)
+    if not m:
+        return f'no "workbench.colorTheme" line in {VSCODE_SETTINGS}; add one once and re-run'
+    new = text[:m.start()] + m.group(1) + json.dumps(label, ensure_ascii=False) + text[m.end():]
+    if new != text:
+        backup(VSCODE_SETTINGS)
+        tmp = target.with_name(target.name + ".mood.tmp")
+        tmp.write_text(new, encoding="utf-8")
+        shutil.copymode(target, tmp)
+        os.replace(tmp, target)
+    return None
+
+
 def looks():
     """Every Claude Code custom theme, with what it pairs with."""
     kitty = kitty_themes()
+    vscode = vscode_themes()
     out = []
     for f in sorted(THEMES_DIR.glob("*.json")):
         data = read_json(f, {}) or {}
@@ -130,6 +185,7 @@ def looks():
             "pack_bg": ((pack_data or {}).get("colors") or {}).get("bg") if isinstance((pack_data or {}).get("colors"), dict) else None,
             "pack_accent": (((pack_data or {}).get("colors") or {}).get("palette") or {}).get("accent") if isinstance((pack_data or {}).get("colors"), dict) else None,
             "kitty": kitty.get(norm(name)),
+            "vscode": vscode.get(norm(name)),
         })
     return out
 
@@ -142,6 +198,7 @@ def active():
         "theme": theme[len("custom:"):] if theme.startswith("custom:") else theme,
         "pack": ((store or {}).get("mix") or {}).get("colors"),
         "kitty": kitty_current_name(),
+        "vscode": vscode_current(),
     }
 
 
@@ -176,6 +233,11 @@ def cmd_list():
                   + (cyan("  active") if act["kitty"] and norm(act["kitty"]) == norm(lk["name"]) else ""))
         else:
             print(f"      {mark(False)} kitty theme   {red('no ' + str(KITTY_DIR) + '/*.conf with ## name: ' + lk['name'])}")
+        if lk["vscode"]:
+            print(f"      {mark(True)} vscode theme  {dim(lk['vscode'])}"
+                  + (cyan("  active") if act["vscode"] == lk["vscode"] else ""))
+        else:
+            print(f"      {dim('–')} vscode theme  {dim('none installed named ' + repr(lk['name']) + ' (optional)')}")
         print()
     return 0
 
@@ -186,6 +248,7 @@ def cmd_current():
     print(f"  claude theme  {cyan(act['theme'] or '?')}")
     print(f"  glowup pack   {cyan(act['pack'] or '?')}")
     print(f"  kitty theme   {cyan(act['kitty'] or '?')}")
+    print(f"  vscode theme  {cyan(act['vscode'] or '?')}")
     return 0
 
 
@@ -225,7 +288,7 @@ def reload_kitty():
     return len(pids)
 
 
-def cmd_apply(slug):
+def cmd_apply(slug, vscode=True):
     items = {lk["slug"]: lk for lk in looks()}
     lk = items.get(slug)
     if lk is None:
@@ -269,6 +332,16 @@ def cmd_apply(slug):
     print(f"  {green('✔')} kitty theme   {lk['kitty'].name}" + dim(f"  (reloaded {reloaded} kitty process{'es' if reloaded != 1 else ''})"))
     print(f"  {green('✔')} claude theme  custom:{slug}")
     print(f"  {green('✔')} glowup pack   {slug}")
+    if not vscode:
+        print(f"  {dim('–')} vscode theme  {dim('skipped (--no-vscode)')}")
+    elif not lk["vscode"]:
+        print(f"  {dim('–')} vscode theme  {dim('skipped: no installed VS Code theme named ' + repr(lk['name']))}")
+    else:
+        err = set_vscode_theme(lk["vscode"])
+        if err:
+            print(f"  {yellow('!')} vscode theme  {yellow(err)}")
+        else:
+            print(f"  {green('✔')} vscode theme  {lk['vscode']}" + dim("  (VS Code switches on its own)"))
     print()
     print(yellow("→ restart Claude Code to load it:") + " /exit, then " + bold("claude --continue"))
     print(dim("  Claude Code reads custom theme colors and glowup's /plugin pack only at session start."))
@@ -278,13 +351,14 @@ def cmd_apply(slug):
 def cmd_help():
     t = bold
     c = cyan
-    print(f"{t('mood')} {dim('— switch Claude Code, glowup and kitty to one matching look')}")
+    print(f"{t('mood')} {dim('— switch Claude Code, glowup, kitty and VS Code to one matching look')}")
     print()
     print(t("USAGE"))
-    print(f"  {c('mood')} {magenta('<look>')}     apply a look")
-    print(f"  {c('mood list')}       list looks and what each pairs with")
-    print(f"  {c('mood current')}    show what is active now")
-    print(f"  {c('mood help')}       this help")
+    print(f"  {c('mood')} {magenta('<look>')}               apply a look")
+    print(f"  {c('mood')} {magenta('<look>')} {c('--no-vscode')}   apply it but leave VS Code's theme alone")
+    print(f"  {c('mood list')}                 list looks and what each pairs with")
+    print(f"  {c('mood current')}              show what is active now")
+    print(f"  {c('mood help')}                 this help")
     print()
     print(t("LOOKS"))
     items = looks()
@@ -302,21 +376,27 @@ def cmd_help():
     print(f"  {magenta('glowup pack')}   ~/.claude/glowup/packs/{magenta('<look>')}.json  → glowup /plugin option pack")
     print(f"  {magenta('kitty theme')}   ~/.config/kitty/*.conf whose \"## name:\" matches the theme name")
     print(f"                → copied to current-theme.conf, kitty reloaded")
+    print(f"  {magenta('vscode theme')}  installed VS Code color theme whose label matches the theme name")
+    print(f"                → \"workbench.colorTheme\" in VS Code's settings.json (optional)")
     print()
     print(t("ADD A LOOK"))
     print(f"  1. In Claude Code: {c('/theme')} → New custom theme…  (its file name is the look's name)")
     print(f"  2. Save a glowup pack with the same name: {c('/glowup pack save <look>')}")
     print(f"  3. Add a kitty theme with {c('## name: <theme name>')} in ~/.config/kitty/")
+    print(f"  4. Optional: a VS Code theme labeled {c('<theme name>')} (see looks/README.md)")
     print()
     print(t("NOTES"))
     print(dim("  • Restart Claude Code after switching; it loads theme colors at session start."))
     print(dim("  • Docs and sources: hoisel-configs/looks/README.md"))
-    print(dim("  • Backups: settings.json.mood.bak and current-theme.conf.mood.bak, next to each file."))
+    print(dim("  • Backups: settings.json.mood.bak and current-theme.conf.mood.bak, next to each file"))
+    print(dim("    (VS Code's settings.json too)."))
     print(dim("  • Set NO_COLOR to disable colors."))
     return 0
 
 
 def main(argv):
+    vscode = "--no-vscode" not in argv
+    argv = [a for a in argv if a != "--no-vscode"]
     if not argv or argv[0] in ("help", "-h", "--help"):
         return cmd_help()
     if argv[0] in ("list", "ls", "-l"):
@@ -324,7 +404,7 @@ def main(argv):
     if argv[0] in ("current", "status"):
         return cmd_current()
     if len(argv) == 1:
-        return cmd_apply(argv[0])
+        return cmd_apply(argv[0], vscode=vscode)
     print(red("✘ too many arguments"), file=sys.stderr)
     return cmd_help() or 2
 

@@ -10,7 +10,7 @@ Every tracked config in `$HOME` is a symlink into this working tree (no plain co
 |---|---|
 | `~/.zshrc`, `~/.gitconfig`, `~/.tmux.conf`, `~/.config/starship.toml`, `~/.config/ulauncher/{settings,extensions}.json` | symlink to the file here |
 | `~/.local/bin/mood`, `~/.config/kitty/kitty.conf`, `~/.config/kitty/*.conf` from `looks/kitty/` | symlink to the file here |
-| `~/.claude/themes`, `~/.claude/glowup/packs`, `~/.hoisel/cheat-sheets` | symlink to the **whole directory** here (`looks/claude-themes`, `looks/glowup-packs`, `cheat-sheets`) |
+| `~/.claude/themes`, `~/.claude/glowup/packs`, `~/.hoisel/cheat-sheets`, `~/.vscode/extensions/hoisel.campfire-theme` | symlink to the **whole directory** here (`looks/claude-themes`, `looks/glowup-packs`, `cheat-sheets`, `looks/vscode/campfire`) |
 
 `install.sh` (configs, then it calls `looks/install.sh`) is the source of truth for these links. When adding a config, add its `link` line there and update this table and the README's table together.
 
