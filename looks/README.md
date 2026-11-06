@@ -1,30 +1,31 @@
 # Looks
 
-A **look** is one matching visual style across three tools that don't know about each other:
+A **look** is one matching visual style across tools that don't know about each other:
 
 | Piece | What it colors | Source in this repo | Where it lives |
 |---|---|---|---|
 | Claude Code custom theme | Claude Code's own UI: side pane background, your message background, inline code, text, success/error | `claude-themes/<look>.json` | `~/.claude/themes/` (whole dir is a symlink here) |
 | glowup pack | What the [glowup](https://glowup.khimani.dev/) mod draws: row style (`slab`, `cards`…), accent, borders, spinner, pane contents | `glowup-packs/<look>.json` | `~/.claude/glowup/packs/` (whole dir is a symlink here) |
 | kitty theme | The terminal itself: background, foreground, the 16 ANSI colors | `kitty/<Name>.conf` | `~/.config/kitty/` (per-file symlinks) |
+| VS Code theme (optional) | The VS Code editor and workbench | `vscode/<look>/` (a theme-only extension) | `~/.vscode/extensions/<publisher>.<name>` (folder symlink) |
 
-The [`mood`](../bin/mood) command switches all three at once.
+The [`mood`](../bin/mood) command switches them all at once.
 
 ## Looks today
 
-| Look | Background | Accent | Claude Code theme | glowup pack | kitty theme |
-|---|---|---|---|---|---|
-| `rose-pine` | `#191724` | `#9983b6` | "Rose Pine" | `rose-pine` (slab) | `Rosé Pine.conf` (upstream Rosé Pine) |
-| `sunset` | `#181119` | `#bd674e` | "Sunset" | `sunset` (slab) | `Sunset.conf` |
-| `cocoa` | `#14110f` | `#f4a6b8` | "Cocoa" | `cocoa` (slab, dithered pane field) | `Cocoa.conf` |
-| `campfire` | `#23272d` | `#f26b21` | "Campfire" | `campfire` (slab, dithered warp pane field, Portuguese spinner words) | `Campfire.conf` |
+| Look | Background | Accent | Claude Code theme | glowup pack | kitty theme | VS Code theme |
+|---|---|---|---|---|---|---|
+| `rose-pine` | `#191724` | `#9983b6` | "Rose Pine" | `rose-pine` (slab) | `Rosé Pine.conf` (upstream Rosé Pine) | "Rosé Pine" (marketplace extension `mvllow.rose-pine`, installed by `looks/install.sh`) |
+| `sunset` | `#181119` | `#bd674e` | "Sunset" | `sunset` (slab) | `Sunset.conf` | none |
+| `cocoa` | `#14110f` | `#f4a6b8` | "Cocoa" | `cocoa` (slab, dithered pane field) | `Cocoa.conf` | none |
+| `campfire` | `#23272d` | `#f26b21` | "Campfire" | `campfire` (slab, dithered warp pane field, Portuguese spinner words) | `Campfire.conf` | "Campfire" (`vscode/campfire/`) |
 
 ## Install on a new machine
 
 Prerequisites: Claude Code, the glowup plugin (`/plugin`), kitty, python3, and `~/.local/bin` on `PATH`.
 
 ```bash
-./looks/install.sh   # links mood, the themes dir, the packs dir and the kitty themes; sets the status line
+./looks/install.sh   # links mood, the themes dir, the packs dir, the kitty and VS Code themes; installs marketplace VS Code themes; sets the status line
 mood                 # help, with every look and whether it's complete
 mood sunset          # apply one
 ```
@@ -39,6 +40,7 @@ kitty must include `current-theme.conf` (this repo's `kitty/kitty.conf` already 
 
 - the glowup pack `~/.claude/glowup/packs/<slug>.json` (same file name)
 - the kitty theme in `~/.config/kitty/*.conf` whose `## name:` line matches the Claude Code theme's `"name"`, ignoring case and accents (`Rose Pine` matches `Rosé Pine`)
+- optionally, the VS Code color theme whose label matches that same name the same way, from any extension installed in `~/.vscode/extensions` (this repo's or the marketplace's)
 
 `mood <look>` then:
 
@@ -46,7 +48,8 @@ kitty must include `current-theme.conf` (this repo's `kitty/kitty.conf` already 
 2. in `~/.claude/settings.json` sets:
    - `"theme": "custom:<look>"`
    - glowup's plugin options (`pluginConfigs."glowup@glowup".options`): `pack` = `<look>`, `theme` = `classic`, `spinner` = `pack`. The last two clear glowup's saved theme and spinner choices so the pack's own palette and spinner show.
-3. tells you to restart Claude Code (`/exit`, then `claude --continue`)
+3. sets `"workbench.colorTheme"` in VS Code's `~/.config/Code/User/settings.json` to the matching VS Code theme. VS Code picks it up on its own. With `--no-vscode` (`mood campfire --no-vscode`) this step is skipped, and a look with no matching VS Code theme skips it with a note. That file is JSONC with comments, so `mood` rewrites only the value on the `"workbench.colorTheme"` line and never re-serializes the file; if the line is missing it says so and changes nothing.
+4. tells you to restart Claude Code (`/exit`, then `claude --continue`)
 
 Before writing, it copies each file to `<file>.mood.bak` (one rolling backup each).
 
@@ -70,8 +73,35 @@ Say the look is `forest`, named "Forest".
 2. **glowup pack.** Write `glowup-packs/forest.json` by hand (reference: glowup's `skills/glowup-pack/reference.md` in the plugin), or set up the look with `/glowup` commands and run `/glowup pack save forest`. Set `"bg"` to the kitty background.
 3. **kitty theme.** Copy `kitty/Sunset.conf` to `kitty/Forest.conf`, change `## name: Forest` and the colors, then run `./looks/install.sh` to link it.
 4. `mood` should list `forest` as `ready`. Apply it with `mood forest` and restart Claude Code.
+5. **VS Code theme (optional).** Copy `vscode/campfire/` to `vscode/forest/`, set `name` (`forest-theme`) and the theme `label` (`Forest`, the Claude Code theme's name) in `package.json`, edit the colors in `themes/`, then run `./looks/install.sh` to link it. See [VS Code theme](#vs-code-theme).
 
 Keep the same background in all three: kitty `background`, pack `"bg"`, and the theme's `composerSidebarBackground`.
+
+## VS Code theme
+
+A look's VS Code theme is a local, theme-only extension (no code, no build step) in `vscode/<look>/`:
+
+| Path | What it is |
+|---|---|
+| `package.json` | the extension manifest. `publisher` + `name` give the folder name in `~/.vscode/extensions` (`hoisel.campfire-theme`); the theme `label` is what `mood` matches and what `"workbench.colorTheme"` holds |
+| `themes/<look>-color-theme.json` | the theme VS Code loads: `colors` (workbench), `tokenColors` (TextMate scopes) and `semanticTokenColors` |
+| `versions/<look>-vN.json` | earlier iterations, kept for reference. VS Code never reads them; the one in use is whatever `themes/` holds |
+| `preview/` | a sample file and side-by-side screenshots of the versions |
+
+`looks/install.sh` links the whole folder to `~/.vscode/extensions/<publisher>.<name>`. VS Code finds the link at its next start and registers it in `~/.vscode/extensions/extensions.json` on its own; `code --list-extensions` shows it. Because it's a link, editing `themes/*.json` here changes the installed theme: run *Developer: Reload Window* to see it.
+
+A look can also use a theme from the VS Code marketplace instead of one in this repo, as `rose-pine` does with `mvllow.rose-pine`. List the extension id in `VSCODE_MARKETPLACE` in `looks/install.sh`, which installs it with `code --install-extension` when it's missing (the only step of the installer that needs the network). `mood` pairs it by the theme label like any other.
+
+To try a change without touching your real VS Code, open it in a throwaway profile:
+
+```bash
+tmp=$(mktemp -d)
+mkdir -p "$tmp/User"
+echo '{ "security.workspace.trust.enabled": false, "workbench.colorTheme": "Campfire" }' > "$tmp/User/settings.json"
+code --user-data-dir "$tmp" --extensionDevelopmentPath="$PWD/looks/vscode/campfire" looks/vscode/campfire/preview
+```
+
+Turning workspace trust off matters: in Restricted Mode VS Code turns semantic highlighting off, so `semanticTokenColors` (bold declarations, `readonly` variables) don't show and the theme looks wrong.
 
 ## Claude Code theme keys worth knowing
 
@@ -98,4 +128,5 @@ These names were read from the Claude Code 2.1.314 binary, not from docs; a late
 - **Don't edit glowup's code** (in `~/.claude/plugins/cache/glowup/`). Things only code can change: the `PROMPT NN` label and the padding of the `slab` bar, and tool glyphs in `slab`. A plugin update would wipe any edit anyway.
 - **Directories, not files, are symlinked** for themes and packs. Claude Code and glowup save by writing a temp file and renaming it, which would turn a per-file symlink back into a plain file and silently stop syncing to this repo.
 - **Inline code and file paths ignore overrides.** In 2.1.314 the markdown renderer colors code spans with the *base* theme's `permission`, never the override (it resolves colors from the base name, not the resolved theme). The only lever is `base`: `dark` gives lavender `#b1b9f9`, `dark-daltonized` gives light blue `#99ccff`, and `dark-ansi` uses the terminal's `ansi:blueBright` (kitty `color12`). `rose-pine` uses `dark` for this reason; `cocoa` uses `dark-ansi` so inline code matches the blue of directories in `ls` under the Cocoa kitty theme. With an `*-ansi` base, every token the theme doesn't override also comes from the kitty palette.
+- **A global `workbench.colorCustomizations` beats every VS Code theme.** Keys set there apply on top of whichever theme is active. Scope theme-specific tweaks to that theme: `"workbench.colorCustomizations": { "[Rosé Pine]": { … } }`. The real settings keep the Rosé Pine pinks scoped this way, so they don't show up under Campfire.
 - **One-off background, no saving:** `printf '\033]11;#181119\033\\'` sets the current kitty window's background; `printf '\033]111\033\\'` resets it. A background set this way survives kitty config reloads, so it would hide the look's background; `mood` sends the reset to every kitty window for that reason.

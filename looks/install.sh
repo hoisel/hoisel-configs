@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Link the looks (Claude Code themes, glowup packs, kitty themes) and the `mood`
+# Link the looks (Claude Code themes, glowup packs, kitty and VS Code themes) and the `mood`
 # command from this repo into $HOME. Safe to re-run: correct links are left alone,
 # anything else in the way is moved aside to <name>.pre-looks.<timestamp>.
 set -euo pipefail
@@ -42,6 +42,39 @@ echo "kitty themes"
 for f in "$LOOKS"/kitty/*.conf; do
   link "$f" "$KITTY_DIR/$(basename "$f")"
 done
+
+# Each looks/vscode/<look>/ is a theme-only VS Code extension. VS Code registers a
+# symlinked folder in ~/.vscode/extensions on its own, under <publisher>.<name>.
+echo "VS Code themes"
+if [ -d "$HOME/.vscode" ] || command -v code >/dev/null 2>&1; then
+  for d in "$LOOKS"/vscode/*/; do
+    d="${d%/}"
+    [ -f "$d/package.json" ] || continue
+    id="$(python3 -c 'import json, sys; p = json.load(open(sys.argv[1])); print(p["publisher"] + "." + p["name"])' "$d/package.json")"
+    link "$d" "$HOME/.vscode/extensions/$id"
+  done
+else
+  echo "  skip    VS Code not found"
+fi
+
+# Looks whose VS Code theme comes from the marketplace instead of this repo.
+# Installed only when missing, so a re-run needs no network.
+VSCODE_MARKETPLACE="mvllow.rose-pine"   # rose-pine -> "Rosé Pine"
+echo "VS Code marketplace themes"
+if command -v code >/dev/null 2>&1; then
+  installed="$(code --list-extensions 2>/dev/null | tr '[:upper:]' '[:lower:]')"
+  for ext in $VSCODE_MARKETPLACE; do
+    if grep -qxF "$(echo "$ext" | tr '[:upper:]' '[:lower:]')" <<<"$installed"; then
+      echo "  ok      $ext"
+    elif code --install-extension "$ext" >/dev/null 2>&1; then
+      echo "  install $ext"
+    else
+      echo "  warning: could not install $ext; run \`code --install-extension $ext\`"
+    fi
+  done
+else
+  echo "  skip    VS Code CLI \`code\` not found"
+fi
 
 # glowup status line field order. A personal glowup setting, shared by every look.
 # Written as glowup's /plugin option in settings.json; glowup applies a changed
